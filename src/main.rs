@@ -1,8 +1,9 @@
-use crate::trackpoints::places::SavedPlace;
+//use crate::trackpoints::places::SavedPlace;
 use std::path::PathBuf;
 use structopt::StructOpt;
 
 mod trackpoints;
+mod google;
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "excavator")]
@@ -15,7 +16,16 @@ struct Opt {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Opt::from_args();
     let rawdata = std::fs::read_to_string(&args.file)?;
-    let result: SavedPlace = serde_json::from_str(&rawdata)?;
-    println!("{:?}", result);
+    
+    //let result: SavedPlace = serde_json::from_str(&rawdata)?;
+    //println!("{:?}", result);    
+    
+    let result: Vec<google::my_activity::MyActivity> = 
+        serde_json::from_str(&rawdata)?;
+    
+    for elem in result.iter()  {
+        println!("{:?}", elem);
+    }
+    
     Ok(())
 }

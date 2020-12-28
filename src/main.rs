@@ -1,9 +1,13 @@
+#[macro_use]
+extern crate diesel;
+
 //use crate::trackpoints::places::SavedPlace;
 use std::path::PathBuf;
 use structopt::StructOpt;
 
 mod trackpoints;
 mod google;
+mod db;
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "excavator")]
@@ -24,7 +28,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         serde_json::from_str(&rawdata)?;
     
     for elem in result.iter()  {
-        println!("{:?}", elem);
+        elem.saveToDb();
     }
     
     Ok(())

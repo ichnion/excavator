@@ -10,4 +10,9 @@ clap = "3.0.0-beta.2"
 structopt = "0.3.13"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+uuid = { version = "0.8", features = ["serde", "v4"] }
+diesel = { version = "1.4.5", features = ["sqlite", "chrono"] }
+
+
+
 

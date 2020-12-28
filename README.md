@@ -30,3 +30,9 @@ diesel migration generate google_my_activity
 ```
 diesel --database-url=ichneos.db migration run
 ```
+
+**Note:** To enforce Delete Cascade on tables with Foreign Keys in Sqlite, the following has to be set before deletions:
+
+```
+sqlite> PRAGMA foreign_keys = ON;
+```

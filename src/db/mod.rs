@@ -24,7 +24,7 @@ pub fn save_activity(connection: &SqliteConnection,
     diesel::insert_into(schema::google_my_activity::table)
         .values(&task)
         .execute(connection)
-        .expect("Error inserting new task");
+        .expect("Error inserting new google_my_activity");
 }
 
 pub fn save_sub_title(connection: &SqliteConnection,
@@ -39,5 +39,50 @@ pub fn save_sub_title(connection: &SqliteConnection,
     diesel::insert_into(schema::activity_sub_title::table)
         .values(&task)
         .execute(connection)
-        .expect("Error inserting new task");
+        .expect("Error inserting new activity_sub_title");
 }
+
+pub fn save_location_info(connection: &SqliteConnection,
+    a_uuid: &str, name: &str, url: &str, source: &str ) { 
+    
+    let task = models::LocationInfoEntity { 
+        a_uuid  : a_uuid.to_string(),
+        name    : name.to_string(),
+        url     : url.to_string(),
+        source  : source.to_string()
+     };
+
+    diesel::insert_into(schema::activity_location_info::table)
+        .values(&task)
+        .execute(connection)
+        .expect("Error inserting new activity_location_info");
+}
+
+pub fn save_products(connection: &SqliteConnection,
+    a_uuid: &str, name: &str ) { 
+    
+    let task = models::ProductsEntity { 
+        a_uuid  : a_uuid.to_string(),
+        name    : name.to_string()
+     };
+
+    diesel::insert_into(schema::activity_products::table)
+        .values(&task)
+        .execute(connection)
+        .expect("Error inserting new activity_products");
+}
+
+pub fn save_details(connection: &SqliteConnection,
+    a_uuid: &str, name: &str ) { 
+    
+    let task = models::DetailsEntity { 
+        a_uuid  : a_uuid.to_string(),
+        name    : name.to_string()
+     };
+
+    diesel::insert_into(schema::activity_details::table)
+        .values(&task)
+        .execute(connection)
+        .expect("Error inserting new activity_details");
+}
+

@@ -34,34 +34,17 @@ pub struct SubTitle {
     pub name   : String,
     pub url    : Option<String>
 }
-/*
-#[derive(Debug)]
-pub struct MyActivityEntity {
-    pub uuid      : String,
-    pub header    : String,
-    pub title     : String,
-    pub title_url : String,
-    pub time      : String
-}
-
-#[derive(Debug)]
-pub struct SubTitlesEntity {
-    pub a_uuid    : String,
-    pub name      : String,
-    pub url       : String
-}
-*/
 
 #[allow(non_snake_case)]
 impl MyActivity {
     
-    pub fn saveToDb(&self) {
+    pub fn saveToDb( &self ) {
         
         let connection = establish_connection();    
          
         let my_uuid    = Uuid::new_v4();
         let title_url  = self.titleUrl.as_ref();//clone();
-                    
+                                    
         save_activity(
            &connection,
            &my_uuid.to_string(),
@@ -82,8 +65,34 @@ impl MyActivity {
             }                             
         }
 
+        if let Some(ref vec) = self.locationInfos {                        
+            for i in vec {
+                save_location_info(
+                    &connection,
+                    &my_uuid.to_string(),
+                    &i.name.to_string(),
+                    &i.url.to_string(),
+                    &i.source.to_string(),
+                );
+            }                             
+        }
+
+        if let Some(ref vec) = self.details {                        
+            for i in vec {
+                save_details(
+                    &connection,
+                    &my_uuid.to_string(),
+                    &i.name.to_string()
+                );
+            }                             
+        }
+
         for p in &self.products {
-            println!("products: {}", p);
+            save_products(
+                    &connection,
+                    &my_uuid.to_string(),
+                    &p.to_string()
+            );
         }
     }
 }

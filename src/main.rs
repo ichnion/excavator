@@ -27,8 +27,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let result: Vec<google::my_activity::MyActivity> = 
         serde_json::from_str(&rawdata)?;
     
+    println!("processing {} records", result.len());
+    
     for elem in result.iter()  {
-        elem.saveToDb();
+        elem.saveToDb( );
     }
     
     Ok(())

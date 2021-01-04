@@ -24,13 +24,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //let result: SavedPlace = serde_json::from_str(&rawdata)?;
     //println!("{:?}", result);    
     
-    let result: Vec<google::my_activity::MyActivity> = 
-        serde_json::from_str(&rawdata)?;
+    if let Some(mpath) = &args.file.to_str() {
+        if !mpath.rfind("Location History.json").is_none() {                        
+            let result: google::location_history::LocationHistory = 
+                serde_json::from_str(&rawdata)?;
+                
+            println!("processing {} Location History records", 
+                result.locations.len()); 
+                
+            result.saveToDb();
+        }
+        else if !mpath.rfind("MyActivity.json").is_none() {
+            let result: Vec<google::my_activity::MyActivity> = 
+                serde_json::from_str(&rawdata)?;
     
-    println!("processing {} records", result.len());
+            println!("processing {} MyActivity records", result.len());
     
-    for elem in result.iter()  {
-        elem.saveToDb( );
+            for elem in result.iter()  {
+                elem.saveToDb( );
+            }
+        }
     }
     
     Ok(())

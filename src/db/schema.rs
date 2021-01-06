@@ -43,6 +43,19 @@ table! {
     }
 }
 
+table! {
+    location_history (id) {
+        id -> Nullable<Integer>,
+        activity -> Nullable<Text>,
+        timestamp_msec -> BigInt,
+        accuracy -> Nullable<Integer>,
+        verticalaccuracy -> Nullable<Integer>,
+        altitude -> Nullable<Integer>,
+        lat -> Float,
+        lng -> Float,
+    }
+}
+
 joinable!(activity_details -> google_my_activity (a_uuid));
 joinable!(activity_location_info -> google_my_activity (a_uuid));
 joinable!(activity_products -> google_my_activity (a_uuid));
@@ -54,4 +67,5 @@ allow_tables_to_appear_in_same_query!(
     activity_products,
     activity_sub_title,
     google_my_activity,
+    location_history,
 );

@@ -44,3 +44,15 @@ CREATE TABLE activity_products (
     FOREIGN KEY (a_uuid) REFERENCES google_my_activity(uuid) ON DELETE CASCADE   
 );
 CREATE INDEX gact4 on activity_products(a_uuid);
+
+CREATE TABLE location_history (
+    id               INTEGER PRIMARY KEY,
+    activity         TEXT,
+    timestamp_msec   BIGINT NOT NULL,
+    accuracy         INTEGER,
+    verticalaccuracy INTEGER,
+    altitude         INTEGER,
+    lat              FLOAT NOT NULL,
+    lng              FLOAT NOT NULL,
+    UNIQUE(timestamp_msec,lat,lng)    
+);

@@ -86,3 +86,24 @@ pub fn save_details(connection: &SqliteConnection,
         .expect("Error inserting new activity_details");
 }
 
+pub fn save_location_history(connection: &SqliteConnection,
+    activity: &str, timestamp_msec: i64, 
+    accuracy: i32, verticalaccuracy: i32,
+    altitude: i32, lat: f32, lng: f32 ) { 
+    
+    let task = models::LocationHistoryEntity { 
+        activity         : activity.to_string(),
+        timestamp_msec   : timestamp_msec,
+        accuracy         : accuracy,
+        verticalaccuracy : verticalaccuracy,
+        altitude         : altitude,
+        lat              : lat,
+        lng              : lng
+     };
+
+    diesel::insert_into(schema::location_history::table)
+        .values(&task)
+        .execute(connection)
+        .expect("Error inserting new activity_details");
+}
+

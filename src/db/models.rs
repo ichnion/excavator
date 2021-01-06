@@ -40,3 +40,15 @@ pub struct DetailsEntity {
     pub a_uuid    : String,
     pub name      : String
 }
+
+#[derive(Insertable)]
+#[table_name = "location_history"]
+pub struct LocationHistoryEntity {
+    pub activity        : String,
+    pub timestamp_msec  : i64,
+    pub accuracy        : i32,
+    pub verticalaccuracy: i32,
+    pub altitude        : i32,
+    pub lat             : f32,
+    pub lng             : f32
+}

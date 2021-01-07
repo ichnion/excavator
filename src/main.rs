@@ -30,9 +30,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .filter_map(|e| e.ok())
     {
         let f_name = entry.file_name().to_string_lossy();
+        let d_name = entry.path().to_string_lossy();
         
-        if f_name.starts_with( "MyActivity.json" ) {
-            print!("processing {}",&entry.path().to_string_lossy());
+        if f_name.starts_with( "MyActivity.json") {
+            print!("processing {}",d_name);
             
             let rawdata = std::fs::read_to_string(&entry.path())?;
             
@@ -47,7 +48,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             //println!("{:?}", result);            
         }
         else if f_name.starts_with( "Location History.json" ) {
-            print!("processing {}",&entry.path().to_string_lossy());
+            print!("processing {}",d_name);
             
             let rawdata = std::fs::read_to_string(&entry.path())?;
             
@@ -60,33 +61,5 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-/*
-    let rawdata = std::fs::read_to_string(&args.file)?;
-    
-    //let result: SavedPlace = serde_json::from_str(&rawdata)?;
-    //println!("{:?}", result);    
-    
-    if let Some(mpath) = &args.file.to_str() {
-        if !mpath.rfind("Location History.json").is_none() {                        
-            let result: google::location_history::LocationHistory = 
-                serde_json::from_str(&rawdata)?;
-                
-            println!("processing {} Location History records", 
-                result.locations.len()); 
-                
-            result.saveToDb();
-        }
-        else if !mpath.rfind("MyActivity.json").is_none() {
-            let result: Vec<google::my_activity::MyActivity> = 
-                serde_json::from_str(&rawdata)?;
-    
-            println!("processing {} MyActivity records", result.len());
-    
-            for elem in result.iter()  {
-                elem.saveToDb( );
-            }
-        }
-    }    
-*/
     Ok(())
 }

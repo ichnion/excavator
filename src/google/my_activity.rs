@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use uuid::Uuid;
 
-use crate::db::*;
+use crate::db::save::*;
 
 #[allow(non_snake_case)]
 #[derive(Deserialize, Debug)]

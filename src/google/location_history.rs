@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use crate::db::*;
+use crate::db::save::*;
 
 #[allow(non_snake_case)]
 #[derive(Deserialize, Debug)]

@@ -1,11 +1,10 @@
-use diesel::{prelude::*, sqlite::SqliteConnection};
 use crate::db::models;
 use crate::db::schema;
+use diesel::{prelude::*, sqlite::SqliteConnection};
 
 pub fn establish_connection() -> SqliteConnection {
     let db = "./ichneos.db";
-    SqliteConnection::establish(db)
-        .unwrap_or_else(|_| panic!("Error connecting to {}", db))
+    SqliteConnection::establish(db).unwrap_or_else(|_| panic!("Error connecting to {}", db))
 }
 
 #[rustfmt::skip]

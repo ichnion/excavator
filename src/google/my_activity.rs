@@ -17,7 +17,6 @@ pub struct MyActivity {
     pub locationInfos : Option<Vec<LocationInfo>>
 }
 
-
 #[rustfmt::skip]
 #[derive(Deserialize, Debug)]
 pub struct LocationInfo {
@@ -41,35 +40,33 @@ pub struct SubTitle {
 
 #[allow(non_snake_case)]
 impl MyActivity {
-    
-    pub fn saveToDb( &self ) {
-        
-        let connection = establish_connection();    
-         
-        let my_uuid    = Uuid::new_v4();
-        let title_url  = self.titleUrl.as_ref();//clone();
-                                    
+    pub fn saveToDb(&self) {
+        let connection = establish_connection();
+
+        let my_uuid = Uuid::new_v4();
+        let title_url = self.titleUrl.as_ref(); //clone();
+
         save_activity(
-           &connection,
-           &my_uuid.to_string(),
-           &self.header,
-           &self.title,
-           &title_url.unwrap_or(&String::from("")).to_string(),
-           &self.time  
+            &connection,
+            &my_uuid.to_string(),
+            &self.header,
+            &self.title,
+            &title_url.unwrap_or(&String::from("")).to_string(),
+            &self.time,
         );
-                
-        if let Some(ref vec) = self.subtitles {                        
+
+        if let Some(ref vec) = self.subtitles {
             for i in vec {
                 save_sub_title(
                     &connection,
                     &my_uuid.to_string(),
                     &i.name.to_string(),
-                    &i.url.as_ref().unwrap_or(&String::from("")).to_string()
+                    &i.url.as_ref().unwrap_or(&String::from("")).to_string(),
                 );
-            }                             
+            }
         }
 
-        if let Some(ref vec) = self.locationInfos {                        
+        if let Some(ref vec) = self.locationInfos {
             for i in vec {
                 save_location_info(
                     &connection,
@@ -78,25 +75,17 @@ impl MyActivity {
                     &i.url.to_string(),
                     &i.source.to_string(),
                 );
-            }                             
+            }
         }
 
-        if let Some(ref vec) = self.details {                        
+        if let Some(ref vec) = self.details {
             for i in vec {
-                save_details(
-                    &connection,
-                    &my_uuid.to_string(),
-                    &i.name.to_string()
-                );
-            }                             
+                save_details(&connection, &my_uuid.to_string(), &i.name.to_string());
+            }
         }
 
         for p in &self.products {
-            save_products(
-                    &connection,
-                    &my_uuid.to_string(),
-                    &p.to_string()
-            );
+            save_products(&connection, &my_uuid.to_string(), &p.to_string());
         }
     }
 }

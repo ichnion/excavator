@@ -7,6 +7,7 @@ pub struct LocationHistory {
     pub locations : Vec<Locations> 
 }
 
+#[rustfmt::skip]
 #[allow(non_snake_case)]
 #[derive(Deserialize, Debug)]
 pub struct Locations {
@@ -19,6 +20,7 @@ pub struct Locations {
     pub activity         : Option<Vec<Activity>>
 }
 
+#[rustfmt::skip]
 #[allow(non_snake_case)]
 #[derive(Deserialize, Debug)]
 pub struct Activity {
@@ -26,6 +28,7 @@ pub struct Activity {
     pub activity    : Vec<Activities>
 }
 
+#[rustfmt::skip]
 #[allow(non_snake_case)]
 #[derive(Deserialize, Debug)]
 pub struct Activities {

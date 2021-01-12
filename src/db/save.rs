@@ -8,6 +8,7 @@ pub fn establish_connection() -> SqliteConnection {
         .unwrap_or_else(|_| panic!("Error connecting to {}", db))
 }
 
+#[rustfmt::skip]
 pub fn save_activity(connection: &SqliteConnection,
     uuid: &str, header: &str, title: &str,
     title_url: &str, time: &str) { 
@@ -26,6 +27,7 @@ pub fn save_activity(connection: &SqliteConnection,
         .expect("Error inserting new google_my_activity");
 }
 
+#[rustfmt::skip]
 pub fn save_sub_title(connection: &SqliteConnection,
     a_uuid: &str, name: &str, url: &str ) { 
     
@@ -41,6 +43,7 @@ pub fn save_sub_title(connection: &SqliteConnection,
         .expect("Error inserting new activity_sub_title");
 }
 
+#[rustfmt::skip]
 pub fn save_location_info(connection: &SqliteConnection,
     a_uuid: &str, name: &str, url: &str, source: &str ) { 
     
@@ -57,6 +60,7 @@ pub fn save_location_info(connection: &SqliteConnection,
         .expect("Error inserting new activity_location_info");
 }
 
+#[rustfmt::skip]
 pub fn save_products(connection: &SqliteConnection,
     a_uuid: &str, name: &str ) { 
     
@@ -71,6 +75,7 @@ pub fn save_products(connection: &SqliteConnection,
         .expect("Error inserting new activity_products");
 }
 
+#[rustfmt::skip]
 pub fn save_details(connection: &SqliteConnection,
     a_uuid: &str, name: &str ) { 
     
@@ -85,6 +90,7 @@ pub fn save_details(connection: &SqliteConnection,
         .expect("Error inserting new activity_details");
 }
 
+#[rustfmt::skip]
 #[cfg_attr(feature = "cargo-clippy", allow(clippy::too_many_arguments))]
 pub fn save_location_history(connection: &SqliteConnection,
     activity: &str, p_timestamp_msec: i64, 

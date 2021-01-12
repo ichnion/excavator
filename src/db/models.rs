@@ -1,5 +1,6 @@
 use super::schema::*;
 
+#[rustfmt::skip]
 #[derive(Insertable)]
 #[table_name = "google_my_activity"]
 pub struct MyActivityEntity {
@@ -10,6 +11,7 @@ pub struct MyActivityEntity {
     pub time      : String
 }
 
+#[rustfmt::skip]
 #[derive(Insertable)]
 #[table_name = "activity_sub_title"]
 pub struct SubTitlesEntity {
@@ -18,6 +20,7 @@ pub struct SubTitlesEntity {
     pub url       : String
 }
 
+#[rustfmt::skip]
 #[derive(Insertable)]
 #[table_name = "activity_location_info"]
 pub struct LocationInfoEntity {
@@ -27,6 +30,7 @@ pub struct LocationInfoEntity {
     pub source    : String
 }
 
+#[rustfmt::skip]
 #[derive(Insertable)]
 #[table_name = "activity_products"]
 pub struct ProductsEntity {
@@ -34,6 +38,7 @@ pub struct ProductsEntity {
     pub name      : String
 }
 
+#[rustfmt::skip]
 #[derive(Insertable)]
 #[table_name = "activity_details"]
 pub struct DetailsEntity {
@@ -41,6 +46,7 @@ pub struct DetailsEntity {
     pub name      : String
 }
 
+#[rustfmt::skip]
 #[derive(Insertable)]
 #[table_name = "location_history"]
 pub struct LocationHistoryEntity {

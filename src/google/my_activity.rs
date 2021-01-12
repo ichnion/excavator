@@ -3,6 +3,7 @@ use uuid::Uuid;
 
 use crate::db::save::*;
 
+#[rustfmt::skip]
 #[allow(non_snake_case)]
 #[derive(Deserialize, Debug)]
 pub struct MyActivity {
@@ -17,6 +18,7 @@ pub struct MyActivity {
 }
 
 
+#[rustfmt::skip]
 #[derive(Deserialize, Debug)]
 pub struct LocationInfo {
     pub name   : String,
@@ -24,11 +26,13 @@ pub struct LocationInfo {
     pub source : String
 }
 
+#[rustfmt::skip]
 #[derive(Deserialize, Debug)]
 pub struct Details {
     pub name   : String
 }
 
+#[rustfmt::skip]
 #[derive(Deserialize, Debug)]
 pub struct SubTitle {
     pub name   : String,

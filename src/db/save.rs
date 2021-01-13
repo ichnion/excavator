@@ -10,9 +10,9 @@ pub fn establish_connection() -> SqliteConnection {
 #[rustfmt::skip]
 pub fn save_activity(connection: &SqliteConnection,
     uuid: &str, header: &str, title: &str,
-    title_url: &str, time: &str) { 
-    
-    let task = models::MyActivityEntity { 
+    title_url: &str, time: &str) -> Result<usize, diesel::result::Error> {
+
+    let task = models::MyActivityEntity {
         uuid      : uuid.to_string(),
         header    : header.to_string(),
         title     : title.to_string(),
@@ -20,17 +20,18 @@ pub fn save_activity(connection: &SqliteConnection,
         time      : time.to_string()
      };
 
-    diesel::insert_into(schema::google_my_activity::table)
+    let result = diesel::insert_into(schema::google_my_activity::table)
         .values(&task)
-        .execute(connection)
-        .expect("Error inserting new google_my_activity");
+        .execute(connection);
+     println!("result is: {:?}", result);
+     result
 }
 
 #[rustfmt::skip]
 pub fn save_sub_title(connection: &SqliteConnection,
-    a_uuid: &str, name: &str, url: &str ) { 
-    
-    let task = models::SubTitlesEntity { 
+    a_uuid: &str, name: &str, url: &str ) {
+
+    let task = models::SubTitlesEntity {
         a_uuid  : a_uuid.to_string(),
         name    : name.to_string(),
         url     : url.to_string()
@@ -44,9 +45,9 @@ pub fn save_sub_title(connection: &SqliteConnection,
 
 #[rustfmt::skip]
 pub fn save_location_info(connection: &SqliteConnection,
-    a_uuid: &str, name: &str, url: &str, source: &str ) { 
-    
-    let task = models::LocationInfoEntity { 
+    a_uuid: &str, name: &str, url: &str, source: &str ) {
+
+    let task = models::LocationInfoEntity {
         a_uuid  : a_uuid.to_string(),
         name    : name.to_string(),
         url     : url.to_string(),
@@ -61,9 +62,9 @@ pub fn save_location_info(connection: &SqliteConnection,
 
 #[rustfmt::skip]
 pub fn save_products(connection: &SqliteConnection,
-    a_uuid: &str, name: &str ) { 
-    
-    let task = models::ProductsEntity { 
+    a_uuid: &str, name: &str ) {
+
+    let task = models::ProductsEntity {
         a_uuid  : a_uuid.to_string(),
         name    : name.to_string()
      };
@@ -76,9 +77,9 @@ pub fn save_products(connection: &SqliteConnection,
 
 #[rustfmt::skip]
 pub fn save_details(connection: &SqliteConnection,
-    a_uuid: &str, name: &str ) { 
-    
-    let task = models::DetailsEntity { 
+    a_uuid: &str, name: &str ) {
+
+    let task = models::DetailsEntity {
         a_uuid  : a_uuid.to_string(),
         name    : name.to_string()
      };
@@ -92,11 +93,11 @@ pub fn save_details(connection: &SqliteConnection,
 #[rustfmt::skip]
 #[cfg_attr(feature = "cargo-clippy", allow(clippy::too_many_arguments))]
 pub fn save_location_history(connection: &SqliteConnection,
-    activity: &str, p_timestamp_msec: i64, 
+    activity: &str, p_timestamp_msec: i64,
     p_accuracy: i32, p_verticalaccuracy: i32,
-    p_altitude: i32, p_lat: f32, p_lng: f32 ) { 
-    
-    let task = models::LocationHistoryEntity { 
+    p_altitude: i32, p_lat: f32, p_lng: f32 ) {
+
+    let task = models::LocationHistoryEntity {
         activity         : activity.to_string(),
         timestamp_msec   : p_timestamp_msec,
         accuracy         : p_accuracy,

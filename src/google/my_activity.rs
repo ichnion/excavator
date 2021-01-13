@@ -9,7 +9,7 @@ use crate::db::save::*;
 pub struct MyActivity {
     pub header        : String,
     pub title         : String,
-    pub subtitles     : Option<Vec<SubTitle>>,    
+    pub subtitles     : Option<Vec<SubTitle>>,
     pub titleUrl      : Option<String>,
     pub time          : String,
     pub products      : Vec<String>,
@@ -46,14 +46,18 @@ impl MyActivity {
         let my_uuid = Uuid::new_v4();
         let title_url = self.titleUrl.as_ref(); //clone();
 
-        save_activity(
+        if let Err(result) = save_activity(
             &connection,
             &my_uuid.to_string(),
             &self.header,
             &self.title,
             &title_url.unwrap_or(&String::from("")).to_string(),
             &self.time,
-        );
+        ) {
+            println!("{:?}", result);
+        } else {
+            unimplemented!()
+        }
 
         if let Some(ref vec) = self.subtitles {
             for i in vec {

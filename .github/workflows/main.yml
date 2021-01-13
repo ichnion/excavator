@@ -10,18 +10,18 @@ jobs:
   rustfmt:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - run: rustup update stable && rustup default stable
-    - run: rustup component add rustfmt
-    - run: cargo fmt --all -- --check
+      - uses: actions/checkout@v2
+      - run: rustup update stable && rustup default stable
+      - run: rustup component add rustfmt
+      - run: cargo fmt --all -- --check
 
   clippy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - run: rustup update stable && rustup default stable
-    - run: rustup component add clippy
-    - run: cargo clippy --all-targets --all-features -- -D warnings
+      - uses: actions/checkout@v2
+      - run: rustup update stable && rustup default stable
+      - run: rustup component add clippy
+      - run: cargo clippy --all-targets --all-features -- -D warnings
 
   test:
     runs-on: ${{ matrix.os }}
@@ -44,22 +44,21 @@ jobs:
         - os: macos-latest
           rust: stable
           other: x86_64-apple-ios
-        - os: windows-latest
-          rust: stable-msvc
-          other: i686-pc-windows-msvc
-        - os: windows-latest
-          rust: nightly-gnu
-          other: i686-pc-windows-gnu
+        #- os: windows-latest
+        #  rust: stable-msvc
+        #  other: i686-pc-windows-msvc
+        #- os: windows-latest
+        #  rust: nightly-gnu
+        #  other: i686-pc-windows-gnu
     steps:
-    - uses: actions/checkout@v2
-    - run: rustup update --no-self-update ${{ matrix.rust }} && rustup default ${{ matrix.rust }}
-    - run: rustup target add ${{ matrix.other }}
-    - run: rustup component add rustc-dev llvm-tools-preview rust-docs
-      if: startsWith(matrix.rust, 'nightly')
-    - run: sudo apt update -y && sudo apt install gcc-multilib libsecret-1-0 libsecret-1-dev -y
-      if: matrix.os == 'ubuntu-latest'
-    - run: rustup component add rustfmt || echo "rustfmt not available"
-    - run: cargo test
+      - uses: actions/checkout@v2
+      - run: rustup set profile minimal
+      - run: rustup toolchain update stable --no-self-update
+      - run: rustup default stable
+      - run: rustup show
+      - run: rustc --version --verbose
+      - run: cargo --version --verbose
+      - run: cargo test --color always --all
 
   success:
     name: action finished

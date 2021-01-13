@@ -43,8 +43,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 elem.saveToDb();
             }
             println!("( {} records )", result.len());
-            //let result: SavedPlace = serde_json::from_str(&rawdata)?;
-            //println!("{:?}", result);
+        //let result: SavedPlace = serde_json::from_str(&rawdata)?;
+        //println!("{:?}", result);
         } else if f_name.starts_with("Location History.json") {
             print!("processing {}", d_name);
 

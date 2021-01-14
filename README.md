@@ -37,4 +37,3 @@ diesel --database-url=ichneos.db migration run
 ```
 sqlite> PRAGMA foreign_keys = ON;
 ```
->>>>>>> refs/heads/location_history

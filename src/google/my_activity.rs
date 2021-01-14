@@ -42,10 +42,8 @@ pub struct SubTitle {
 impl MyActivity {
     pub fn saveToDb(&self) {
         let connection = establish_connection();
-
         let my_uuid = Uuid::new_v4();
         let title_url = self.titleUrl.as_ref(); //clone();
-
         if let Err(result) = save_activity(
             &connection,
             &my_uuid.to_string(),
@@ -54,9 +52,7 @@ impl MyActivity {
             &title_url.unwrap_or(&String::from("")).to_string(),
             &self.time,
         ) {
-            println!("{:?}", result);
-        } else {
-            unimplemented!()
+            println!("Err: {:?}", result);
         }
 
         if let Some(ref vec) = self.subtitles {

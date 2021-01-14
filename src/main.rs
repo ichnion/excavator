@@ -31,7 +31,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     {
         let f_name = entry.file_name().to_string_lossy();
         let d_name = entry.path().to_string_lossy();
-
         if f_name.starts_with("MyActivity.json") {
             print!("processing {}", d_name);
 

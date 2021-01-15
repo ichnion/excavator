@@ -112,3 +112,26 @@ pub fn save_location_history(connection: &SqliteConnection,
         .execute(connection)
         .expect("Error inserting new activity_details");
 }
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "cargo-clippy", allow(clippy::too_many_arguments))]
+pub fn save_saved_place(connection: &SqliteConnection,
+    activity: &str, p_timestamp_msec: i64,
+    p_accuracy: i32, p_verticalaccuracy: i32,
+    p_altitude: i32, p_lat: f32, p_lng: f32 ) {
+
+    let task = models::LocationHistoryEntity {
+        activity         : activity.to_string(),
+        timestamp_msec   : p_timestamp_msec,
+        accuracy         : p_accuracy,
+        verticalaccuracy : p_verticalaccuracy,
+        altitude         : p_altitude,
+        lat              : p_lat,
+        lng              : p_lng
+     };
+
+    diesel::insert_into(schema::location_history::table)
+        .values(&task)
+        .execute(connection)
+        .expect("Error inserting new activity_details");
+}

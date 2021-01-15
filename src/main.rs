@@ -1,13 +1,11 @@
 #[macro_use]
 extern crate diesel;
 
-//use crate::trackpoints::places::SavedPlace;
-//use std::path::PathBuf;
 use structopt::StructOpt;
+use trackpoints::google::{location_history, my_activity, saved_places};
 use walkdir::WalkDir;
 
 mod db;
-mod google;
 mod trackpoints;
 
 #[derive(Debug, StructOpt)]
@@ -15,8 +13,6 @@ mod trackpoints;
 struct Opt {
     command: String,
     directory_name: String,
-    //#[structopt(parse(from_os_str))]
-    //file: PathBuf,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -31,29 +27,41 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     {
         let f_name = entry.file_name().to_string_lossy();
         let d_name = entry.path().to_string_lossy();
-        if f_name.starts_with("MyActivity.json") {
-            print!("processing {}", d_name);
+        let file_name = f_name.as_ref();
+        match file_name {
+            "MyActivity.json" => {
+                print!("processing {}", d_name);
 
-            let rawdata = std::fs::read_to_string(&entry.path())?;
+                let rawdata = std::fs::read_to_string(&entry.path())?;
 
-            let result: Vec<google::my_activity::MyActivity> = serde_json::from_str(&rawdata)?;
+                let result: Vec<my_activity::MyActivity> = serde_json::from_str(&rawdata)?;
 
-            for elem in result.iter() {
-                elem.saveToDb();
-            }
-            println!("( {} records )", result.len());
-        //let result: SavedPlace = serde_json::from_str(&rawdata)?;
-        //println!("{:?}", result);
-        } else if f_name.starts_with("Location History.json") {
-            print!("processing {}", d_name);
+                for elem in result.iter() {
+                    elem.saveToDb();
+                }
+                println!("( {} records )", result.len());
+            },
+            "Location\tHistory.json" => {
+                print!("processing {}", d_name);
 
-            let rawdata = std::fs::read_to_string(&entry.path())?;
+                let rawdata = std::fs::read_to_string(&entry.path())?;
 
-            let result: google::location_history::LocationHistory = serde_json::from_str(&rawdata)?;
+                let result: location_history::LocationHistory = serde_json::from_str(&rawdata)?;
 
-            result.saveToDb();
+                result.saveToDb();
 
-            println!("( {} records )", result.locations.len());
+                println!("( {} records )", result.locations.len());
+            },
+            "Saved Place.json" => {
+                print!("processing {}", d_name);
+
+                let rawdata = std::fs::read_to_string(&entry.path())?;
+
+                let result: saved_places::SavedPlace = serde_json::from_str(&rawdata)?;
+
+                //result.saveToDb();
+            },
+            _ => println!("No files are matched"),
         }
     }
 

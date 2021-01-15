@@ -56,6 +56,19 @@ table! {
     }
 }
 
+table! {
+    saved_places (id) {
+        id -> Nullable<Integer>,
+        title -> Nullable<Text>,
+        address -> Nullable<Text>,
+        name -> Nullable<Text>,
+        country_code -> Nullable<Text>,
+        url -> Text,
+        lat -> Float,
+        lng -> Float,
+    }
+}
+
 joinable!(activity_details -> google_my_activity (a_uuid));
 joinable!(activity_location_info -> google_my_activity (a_uuid));
 joinable!(activity_products -> google_my_activity (a_uuid));
@@ -68,4 +81,5 @@ allow_tables_to_appear_in_same_query!(
     activity_sub_title,
     google_my_activity,
     location_history,
+    saved_places
 );

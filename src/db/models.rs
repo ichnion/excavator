@@ -58,3 +58,16 @@ pub struct LocationHistoryEntity {
     pub lat             : f32,
     pub lng             : f32
 }
+
+#[rustfmt::skip]
+#[derive(Insertable)]
+#[table_name = "saved_places"]
+pub struct SavedPlaceEntity {
+    pub title       : String,
+    pub address     : Option<String>,
+    pub name        : Option<String>,
+    pub country_code: Option<String>,
+    pub url         : String,
+    pub lat         : f32,
+    pub lng         : f32,
+}

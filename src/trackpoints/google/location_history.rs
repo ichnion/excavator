@@ -67,7 +67,6 @@ impl LocationHistory {
             save_location_history(
                 &connection,
                 &activity,
-                //(&elem.timestampMs.parse::<i64>().unwrap()/1000) as i32,
                 elem.timestampMs.parse::<i64>().unwrap(),
                 elem.accuracy,
                 verticalAccuracy,
@@ -75,12 +74,6 @@ impl LocationHistory {
                 elem.latitudeE7 as f32 / 10000000.0,
                 elem.longitudeE7 as f32 / 10000000.0,
             );
-            //println!("activity: {}, timestamp: {}, lat: {}, lng: {}",
-            //println!("insert into lochistory (activity,timestamp_sec,geom) values ('{}',{},st_geomfromtext('POINT({} {})',4326));",
-            //    activity,
-            //    elem.timestampMs.parse::<i64>().unwrap() /1000,
-            //    elem.longitudeE7 as f64/10000000.0,
-            //    elem.latitudeE7  as f64/10000000.0,);
         }
     }
 }

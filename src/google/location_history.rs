@@ -1,5 +1,5 @@
-use crate::db::save::*;
 use serde::Deserialize;
+use rusqlite::{Connection,params};
 
 #[allow(non_snake_case)]
 #[derive(Deserialize, Debug)]
@@ -38,8 +38,7 @@ pub struct Activities {
 
 #[allow(non_snake_case)]
 impl LocationHistory {
-    pub fn saveToDb(&self) {
-        let connection = establish_connection();
+    pub fn saveToDb(&self,conn : &Connection ) {
 
         for elem in self.locations.iter() {
             let activity: String;
@@ -63,24 +62,20 @@ impl LocationHistory {
             } else {
                 activity = "na".to_string();
             }
-
-            save_location_history(
-                &connection,
-                &activity,
-                //(&elem.timestampMs.parse::<i64>().unwrap()/1000) as i32,
-                elem.timestampMs.parse::<i64>().unwrap(),
-                elem.accuracy,
-                verticalAccuracy,
-                altitude,
-                elem.latitudeE7 as f32 / 10000000.0,
-                elem.longitudeE7 as f32 / 10000000.0,
-            );
-            //println!("activity: {}, timestamp: {}, lat: {}, lng: {}",
-            //println!("insert into lochistory (activity,timestamp_sec,geom) values ('{}',{},st_geomfromtext('POINT({} {})',4326));",
-            //    activity,
-            //    elem.timestampMs.parse::<i64>().unwrap() /1000,
-            //    elem.longitudeE7 as f64/10000000.0,
-            //    elem.latitudeE7  as f64/10000000.0,);
+                        
+            conn.execute("insert into google_location_history 
+                (activity,timestamp_msec,accuracy,verticalaccuracy,altitude,lat,lng)
+                values(?1, $2, $3, $4, $5, $6/10000000.0, $7/10000000.0)", 
+                params![&activity,
+                  elem.timestampMs.parse::<i64>().unwrap(),
+                  elem.accuracy,
+                  verticalAccuracy,
+                  altitude,
+                  elem.latitudeE7,
+                  elem.longitudeE7
+                ]
+            )/*.map_err(|err| println!("{:?}", err))*/.ok();
         }
     }
 }
+

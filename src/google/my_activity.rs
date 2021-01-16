@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use uuid::Uuid;
 
-use crate::db::save::*;
+use rusqlite::{Connection,params};
 
 #[rustfmt::skip]
 #[allow(non_snake_case)]
@@ -38,54 +38,81 @@ pub struct SubTitle {
     pub url    : Option<String>
 }
 
+#[rustfmt::skip]
 #[allow(non_snake_case)]
 impl MyActivity {
-    pub fn saveToDb(&self) {
-        let connection = establish_connection();
+    pub fn saveToDb(&self,conn: &Connection) {
 
         let my_uuid = Uuid::new_v4();
         let title_url = self.titleUrl.as_ref(); //clone();
 
-        save_activity(
-            &connection,
-            &my_uuid.to_string(),
-            &self.header,
-            &self.title,
-            &title_url.unwrap_or(&String::from("")).to_string(),
-            &self.time,
-        );
+        conn.execute("insert into google_my_activity (
+                uuid,
+                header,
+                title,
+                title_url,
+                time
+            )
+            values (?1, ?2, ?3, ?4, ?5)", 
+            params![
+                &my_uuid.to_string(),
+                &self.header,
+                &self.title,
+                &title_url.unwrap_or(&String::from("")).to_string(),
+                &self.time,
+            ]
+        ).ok();
 
         if let Some(ref vec) = self.subtitles {
             for i in vec {
-                save_sub_title(
-                    &connection,
-                    &my_uuid.to_string(),
-                    &i.name.to_string(),
-                    &i.url.as_ref().unwrap_or(&String::from("")).to_string(),
-                );
+                conn.execute(
+                    "insert into activity_sub_title 
+                        (a_uuid, name, url) values (?1, ?2, ?3)", 
+                    params![
+                        &my_uuid.to_string(),
+                        &i.name.to_string(),
+                        &i.url.as_ref().unwrap_or(&String::from("")).to_string()
+                    ]
+                ).ok();                
             }
         }
 
         if let Some(ref vec) = self.locationInfos {
             for i in vec {
-                save_location_info(
-                    &connection,
-                    &my_uuid.to_string(),
-                    &i.name.to_string(),
-                    &i.url.to_string(),
-                    &i.source.to_string(),
-                );
+                conn.execute(
+                    "insert into activity_location_info
+                        (a_uuid, name, url, source)
+                        values (?1, ?2, ?3, ?4)",
+                    params![
+                        &my_uuid.to_string(),
+                        &i.name.to_string(),
+                        &i.url.to_string(),
+                        &i.source.to_string()
+                    ]
+                ).ok();                
             }
         }
 
         if let Some(ref vec) = self.details {
             for i in vec {
-                save_details(&connection, &my_uuid.to_string(), &i.name.to_string());
+                conn.execute(
+                    "insert into activity_details (a_uuid, name) 
+                     values (?1, ?2)", 
+                    params![
+                        &my_uuid.to_string(), &i.name.to_string()
+                    ]
+                ).ok();
             }
         }
 
         for p in &self.products {
-            save_products(&connection, &my_uuid.to_string(), &p.to_string());
+            conn.execute(
+                "insert into activity_products (a_uuid,name) 
+                 values (?1, ?2)",
+                params![
+                    &my_uuid.to_string(), &p.to_string()
+                ]
+            ).ok();
         }
     }
 }

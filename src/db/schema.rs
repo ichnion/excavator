@@ -1,8 +1,7 @@
-use rusqlite::{Connection};
+use rusqlite::Connection;
 use rusqlite::NO_PARAMS;
 
-pub fn create_tables( conn: &Connection ) {
-    
+pub fn create_tables(conn: &Connection) {
     /*
      * google_my_activity
      */
@@ -16,9 +15,11 @@ pub fn create_tables( conn: &Connection ) {
             UNIQUE(header,title,time)
         )",
         NO_PARAMS,
-    ).map_err(|err| println!("{:?}", err)).ok();
-    
-    /* 
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
+
+    /*
      * activity_location_info
      */
     conn.execute(
@@ -28,16 +29,19 @@ pub fn create_tables( conn: &Connection ) {
             name   TEXT,
             url    TEXT,
             source TEXT,
-            FOREIGN KEY (a_uuid) REFERENCES google_my_activity(uuid) ON DELETE CASCADE   
+            FOREIGN KEY (a_uuid) REFERENCES google_my_activity(uuid) ON DELETE CASCADE
         ) ",
         NO_PARAMS,
-    ).map_err(|err| println!("{:?}", err)).ok();
-    
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
 
     conn.execute(
         "CREATE INDEX IF NOT EXISTS gact1 ON activity_location_info(a_uuid)",
         NO_PARAMS,
-    ).map_err(|err| println!("{:?}", err)).ok();
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
 
     /*
      * activity_sub_title
@@ -46,17 +50,21 @@ pub fn create_tables( conn: &Connection ) {
         "CREATE TABLE IF NOT EXISTS activity_sub_title (
            id     INTEGER PRIMARY KEY,
            a_uuid TEXT NOT NULL,
-           name   TEXT,    
-           url    TEXT,    
-           FOREIGN KEY (a_uuid) REFERENCES google_my_activity(uuid) ON DELETE CASCADE   
+           name   TEXT,
+           url    TEXT,
+           FOREIGN KEY (a_uuid) REFERENCES google_my_activity(uuid) ON DELETE CASCADE
         )",
         NO_PARAMS,
-    ).map_err(|err| println!("{:?}", err)).ok();
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
 
     conn.execute(
         "CREATE INDEX IF NOT EXISTS gact2 ON activity_sub_title(a_uuid)",
         NO_PARAMS,
-    ).map_err(|err| println!("{:?}", err)).ok();
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
 
     /*
      * activity_details
@@ -66,15 +74,19 @@ pub fn create_tables( conn: &Connection ) {
             id     INTEGER PRIMARY KEY,
             a_uuid TEXT NOT NULL,
             name   TEXT,
-            FOREIGN KEY (a_uuid) REFERENCES google_my_activity(uuid) ON DELETE CASCADE   
+            FOREIGN KEY (a_uuid) REFERENCES google_my_activity(uuid) ON DELETE CASCADE
         )",
         NO_PARAMS,
-    ).map_err(|err| println!("{:?}", err)).ok();
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
 
     conn.execute(
         "CREATE INDEX IF NOT EXISTS gact3 ON activity_details(a_uuid) ",
         NO_PARAMS,
-    ).map_err(|err| println!("{:?}", err)).ok();
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
 
     /*
      * activity_products
@@ -84,15 +96,19 @@ pub fn create_tables( conn: &Connection ) {
             id     INTEGER PRIMARY KEY,
             a_uuid TEXT NOT NULL,
             name   TEXT,
-            FOREIGN KEY (a_uuid) REFERENCES google_my_activity(uuid) ON DELETE CASCADE   
+            FOREIGN KEY (a_uuid) REFERENCES google_my_activity(uuid) ON DELETE CASCADE
         )",
         NO_PARAMS,
-    ).map_err(|err| println!("{:?}", err)).ok();
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
 
     conn.execute(
         "CREATE INDEX IF NOT EXISTS gact4 ON activity_products(a_uuid)",
         NO_PARAMS,
-    ).map_err(|err| println!("{:?}", err)).ok();
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
 
     /*
      * google_location_history
@@ -110,9 +126,30 @@ pub fn create_tables( conn: &Connection ) {
             altitude         INTEGER,
             lat              FLOAT NOT NULL,
             lng              FLOAT NOT NULL,
-            UNIQUE(timestamp_msec,lat,lng,source)    
+            UNIQUE(timestamp_msec,lat,lng)
         )",
         NO_PARAMS,
-    ).map_err(|err| println!("{:?}", err)).ok();
-    
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
+
+    /*
+     * google_saved_places
+     */
+    conn.execute(
+        "create table if not exists google_saved_places (
+            id               INTEGER PRIMARY KEY,
+            activity         TEXT,
+            timestamp_msec   BIGINT NOT NULL,
+            accuracy         INTEGER,
+            verticalaccuracy INTEGER,
+            altitude         INTEGER,
+            lat              FLOAT NOT NULL,
+            lng              FLOAT NOT NULL,
+            UNIQUE(timestamp_msec,lat,lng)
+        )",
+        NO_PARAMS,
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
 }

@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use uuid::Uuid;
 
-use rusqlite::{Connection,params};
+use rusqlite::{params, Connection};
 
 #[rustfmt::skip]
 #[allow(non_snake_case)]

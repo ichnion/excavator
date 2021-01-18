@@ -1,4 +1,7 @@
 use serde::Deserialize;
+use uuid::Uuid;
+
+use rusqlite::{params, Connection};
 
 #[derive(Deserialize, Debug)]
 pub struct Geometry {
@@ -47,5 +50,37 @@ pub struct Element {
 #[derive(Deserialize, Debug)]
 pub struct SavedPlace {
     pub r#type: String,
-    pub features: Vec<Element>,
+    pub features: Option<Vec<Element>>,
+}
+
+#[rustfmt::skip]
+#[allow(non_snake_case)]
+impl SavedPlace {
+    pub fn saveToDb(&self,conn: &Connection) {
+        let my_uuid = Uuid::new_v4();
+
+        if let Some(ref vec) = self.features {
+            for i in vec {
+                conn.execute(
+                    "INSERT into google_my_activity values (
+                        uuid,
+                        name,
+                        address,
+                        url,
+                        lat,
+                        lng
+                    )
+                    values (?1, ?2, ?3, ?4, ?5)",
+                    params![
+                        &my_uuid.to_string(),
+                        &i.properties.location.business_name,
+                        &i.properties.location.address,
+                        &i.properties.google_maps_url,
+                        &i.properties.location.geo_coordinate.latitude,
+                        &i.properties.location.geo_coordinate.longitude,
+                    ]
+                ).ok();
+            }
+        }
+    }
 }

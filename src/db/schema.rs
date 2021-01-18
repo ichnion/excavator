@@ -152,4 +152,61 @@ pub fn create_tables(conn: &Connection) {
     )
     .map_err(|err| println!("{:?}", err))
     .ok();
+
+    /*
+     * facebook_device_location
+     */
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS facebook_device_location (
+            id               INTEGER PRIMARY KEY,
+            spn              TEXT,
+            country_code     TEXT,
+        )",
+        NO_PARAMS,
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
+
+    /*
+     * facebook_device_location
+     */
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS facebook_device_location (
+            id               INTEGER PRIMARY KEY,
+            spn              TEXT,
+            country_code     TEXT,
+        )",
+        NO_PARAMS,
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
+
+    /*
+     * facebook_primary_location
+     */
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS facebook_primary_location (
+            id                INTEGER PRIMARY KEY,
+            city_region_pairs TEXT,
+            zipcode           TEXT,
+        )",
+        NO_PARAMS,
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
+
+    /*
+     * facebook_primary_public_location
+     */
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS facebook_primary_public_location (
+            id                INTEGER PRIMARY KEY,
+            city              TEXT,
+            region            TEXT,
+            country           TEXT,
+        )",
+        NO_PARAMS,
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
 }

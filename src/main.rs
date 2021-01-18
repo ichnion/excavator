@@ -1,5 +1,6 @@
 use rusqlite::{Connection, Result};
 use structopt::StructOpt;
+use trackpoints::facebook::{device_location, primary_location, primary_public_location};
 use trackpoints::google::{location_history, my_activity, saved_places};
 use walkdir::WalkDir;
 
@@ -42,7 +43,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let f_name = entry.file_name().to_string_lossy();
         let d_name = entry.path().to_string_lossy();
         let file_name = f_name.as_ref();
-
+        println!("file_name: {:?}", file_name);
         match file_name {
             "MyActivity.json" | "search-history.json" | "watch-history.json" => {
                 print!("processing {}", d_name);
@@ -68,13 +69,51 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("( {} records )", result.locations.len());
             }
             "Saved\tPlace.json" => {
-                print!("processing {}", d_name);
+                println!("processing {}", d_name);
 
                 let rawdata = std::fs::read_to_string(&entry.path())?;
 
                 let result: saved_places::SavedPlace = serde_json::from_str(&rawdata)?;
 
                 result.saveToDb(&conn);
+            }
+            "device_location.json" => {
+                println!("processing {}", d_name);
+
+                let rawdata = std::fs::read_to_string(&entry.path())?;
+
+                let result: device_location::DeviceLocation = serde_json::from_str(&rawdata)?;
+
+                let response = result.saveToDb(&conn)?;
+
+                println!("( {} records )", result.phone_number_location.len());
+                println!("{:?}", response);
+            }
+            "primary_location.json" => {
+                println!("processing {}", d_name);
+
+                let rawdata = std::fs::read_to_string(&entry.path())?;
+
+                let result: primary_location::PrimaryLocation = serde_json::from_str(&rawdata)?;
+
+                let response = result.saveToDb(&conn)?;
+
+                println!(
+                    "( {} records )",
+                    result.primary_location.city_region_pairs.len()
+                );
+                println!("{:?}", response);
+            }
+            "primary_public_location.json" => {
+                println!("processing {}", d_name);
+
+                let rawdata = std::fs::read_to_string(&entry.path())?;
+
+                let result: primary_public_location::PrimaryPublicLocation =
+                    serde_json::from_str(&rawdata)?;
+
+                let response = result.saveToDb(&conn)?;
+                println!("{:?}", response);
             }
             _ => println!("No files are matched"),
         }

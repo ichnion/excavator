@@ -1,5 +1,5 @@
+use rusqlite::{params, Connection};
 use serde::Deserialize;
-use rusqlite::{Connection,params};
 
 #[allow(non_snake_case)]
 #[derive(Deserialize, Debug)]
@@ -38,8 +38,7 @@ pub struct Activities {
 
 #[allow(non_snake_case)]
 impl LocationHistory {
-    pub fn saveToDb(&self,conn : &Connection ) {
-
+    pub fn saveToDb(&self, conn: &Connection) {
         for elem in self.locations.iter() {
             let activity: String;
             let altitude: i32;
@@ -62,10 +61,9 @@ impl LocationHistory {
             } else {
                 activity = "na".to_string();
             }
-                        
-            conn.execute("insert into google_location_history 
+            conn.execute("insert into google_location_history
                 (activity,timestamp_msec,accuracy,verticalaccuracy,altitude,lat,lng,source)
-                values(?1, $2, $3, $4, $5, $6/10000000.0, $7/10000000.0,'location_history')", 
+                values(?1, $2, $3, $4, $5, $6/10000000.0, $7/10000000.0,'location_history')",
                 params![&activity,
                   elem.timestampMs.parse::<i64>().unwrap(),
                   elem.accuracy,
@@ -78,4 +76,3 @@ impl LocationHistory {
         }
     }
 }
-

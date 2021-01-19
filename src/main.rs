@@ -50,6 +50,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 elem.saveToDb(&conn);
             }
             println!("( {} records )", result.len());
+            
             //let result: SavedPlace = serde_json::from_str(&rawdata)?;
             //println!("{:?}", result);
         } else if f_name.starts_with("Location History.json") {
@@ -63,6 +64,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             result.saveToDb(&conn);
 
             println!("( {} records )", result.locations.len());
+        } else if d_name.contains("Semantic Location History") && 
+            f_name.ends_with(".json") {
+
+            print!("processing {}", d_name);
+            
+            let rawdata = std::fs::read_to_string(&entry.path())?;
+            let result: google::semantic_location_history::TimeLineObjects = serde_json::from_str(&rawdata)?;
+            
+            println!("( {} records )", result.timelineObjects.len());            
+            result.saveToDb(&conn);
         }
     }
 

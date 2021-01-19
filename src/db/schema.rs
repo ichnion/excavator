@@ -7,7 +7,7 @@ pub fn create_tables( conn: &Connection ) {
      * google_my_activity
      */
     conn.execute(
-        "CREATE TABLE if not exists  google_my_activity (
+        "CREATE TABLE IF NOT EXISTS  google_my_activity (
             uuid      TEXT NOT NULL PRIMARY KEY,
             header    TEXT NOT NULL,
             title     TEXT NOT NULL,
@@ -22,7 +22,7 @@ pub fn create_tables( conn: &Connection ) {
      * activity_location_info
      */
     conn.execute(
-        "create table if not exists activity_location_info (
+        "CREATE TABLE IF NOT EXISTS activity_location_info (
             id     INTEGER PRIMARY KEY,
             a_uuid TEXT NOT NULL ,
             name   TEXT,
@@ -35,7 +35,7 @@ pub fn create_tables( conn: &Connection ) {
     
 
     conn.execute(
-        "CREATE INDEX if not exists gact1 on activity_location_info(a_uuid)",
+        "CREATE INDEX IF NOT EXISTS gact1 ON activity_location_info(a_uuid)",
         NO_PARAMS,
     ).map_err(|err| println!("{:?}", err)).ok();
 
@@ -43,7 +43,7 @@ pub fn create_tables( conn: &Connection ) {
      * activity_sub_title
      */
     conn.execute(
-        "create table if not exists activity_sub_title (
+        "CREATE TABLE IF NOT EXISTS activity_sub_title (
            id     INTEGER PRIMARY KEY,
            a_uuid TEXT NOT NULL,
            name   TEXT,    
@@ -54,7 +54,7 @@ pub fn create_tables( conn: &Connection ) {
     ).map_err(|err| println!("{:?}", err)).ok();
 
     conn.execute(
-        "create index if not exists gact2 on activity_sub_title(a_uuid)",
+        "CREATE INDEX IF NOT EXISTS gact2 ON activity_sub_title(a_uuid)",
         NO_PARAMS,
     ).map_err(|err| println!("{:?}", err)).ok();
 
@@ -62,7 +62,7 @@ pub fn create_tables( conn: &Connection ) {
      * activity_details
      */
     conn.execute(
-        "create table if not exists activity_details (
+        "CREATE TABLE IF NOT EXISTS activity_details (
             id     INTEGER PRIMARY KEY,
             a_uuid TEXT NOT NULL,
             name   TEXT,
@@ -72,7 +72,7 @@ pub fn create_tables( conn: &Connection ) {
     ).map_err(|err| println!("{:?}", err)).ok();
 
     conn.execute(
-        "create index if not exists gact3 on activity_details(a_uuid) ",
+        "CREATE INDEX IF NOT EXISTS gact3 ON activity_details(a_uuid) ",
         NO_PARAMS,
     ).map_err(|err| println!("{:?}", err)).ok();
 
@@ -80,7 +80,7 @@ pub fn create_tables( conn: &Connection ) {
      * activity_products
      */
     conn.execute(
-        "create table if not exists activity_products (
+        "CREATE TABLE IF NOT EXISTS activity_products (
             id     INTEGER PRIMARY KEY,
             a_uuid TEXT NOT NULL,
             name   TEXT,
@@ -90,7 +90,7 @@ pub fn create_tables( conn: &Connection ) {
     ).map_err(|err| println!("{:?}", err)).ok();
 
     conn.execute(
-        "create index if not exists gact4 on activity_products(a_uuid)",
+        "CREATE INDEX IF NOT EXISTS gact4 ON activity_products(a_uuid)",
         NO_PARAMS,
     ).map_err(|err| println!("{:?}", err)).ok();
 
@@ -98,16 +98,19 @@ pub fn create_tables( conn: &Connection ) {
      * google_location_history
      */
     conn.execute(
-        "create table if not exists google_location_history (
+        "CREATE TABLE IF NOT EXISTS google_location_history (
             id               INTEGER PRIMARY KEY,
+            source           TEXT,
             activity         TEXT,
+            address          TEXT,
+            place_name       TEXT,
             timestamp_msec   BIGINT NOT NULL,
             accuracy         INTEGER,
             verticalaccuracy INTEGER,
             altitude         INTEGER,
             lat              FLOAT NOT NULL,
             lng              FLOAT NOT NULL,
-            UNIQUE(timestamp_msec,lat,lng)    
+            UNIQUE(timestamp_msec,lat,lng,source)    
         )",
         NO_PARAMS,
     ).map_err(|err| println!("{:?}", err)).ok();

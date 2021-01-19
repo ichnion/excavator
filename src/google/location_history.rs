@@ -64,8 +64,8 @@ impl LocationHistory {
             }
                         
             conn.execute("insert into google_location_history 
-                (activity,timestamp_msec,accuracy,verticalaccuracy,altitude,lat,lng)
-                values(?1, $2, $3, $4, $5, $6/10000000.0, $7/10000000.0)", 
+                (activity,timestamp_msec,accuracy,verticalaccuracy,altitude,lat,lng,source)
+                values(?1, $2, $3, $4, $5, $6/10000000.0, $7/10000000.0,'location_history')", 
                 params![&activity,
                   elem.timestampMs.parse::<i64>().unwrap(),
                   elem.accuracy,

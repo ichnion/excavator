@@ -168,20 +168,6 @@ pub fn create_tables(conn: &Connection) {
     .ok();
 
     /*
-     * facebook_device_location
-     */
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS facebook_device_location (
-            id               INTEGER PRIMARY KEY,
-            spn              TEXT,
-            country_code     TEXT,
-        )",
-        NO_PARAMS,
-    )
-    .map_err(|err| println!("{:?}", err))
-    .ok();
-
-    /*
      * facebook_primary_location
      */
     conn.execute(

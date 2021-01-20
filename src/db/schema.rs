@@ -137,7 +137,7 @@ pub fn create_tables(conn: &Connection) {
      * google_saved_places
      */
     conn.execute(
-        "create table if not exists google_saved_places (
+        "CREATE TABLE IF NOT EXISTS google_saved_places (
             id               INTEGER PRIMARY KEY,
             activity         TEXT,
             timestamp_msec   BIGINT NOT NULL,

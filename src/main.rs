@@ -1,11 +1,11 @@
 use rusqlite::{Connection, Result};
 use structopt::StructOpt;
-use trackpoints::facebook::{device_location, primary_location, primary_public_location};
-use trackpoints::google::{location_history, my_activity, saved_places};
+use activities::facebook::{device_location, primary_location, primary_public_location};
+use activities::google::{location_history, my_activity, saved_places};
 use walkdir::WalkDir;
 
 mod db;
-mod trackpoints;
+mod activities;
 
 #[derive(Debug, StructOpt)]
 #[structopt(

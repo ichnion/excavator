@@ -48,9 +48,12 @@ mod tests {
     fn test_primary_location() -> Result<(), Box<dyn std::error::Error>> {
         let conn = Connection::open("ichnion.db")?;
         let zip_code = "1510053".to_string();
-        let primary_location = PrimaryLocation {
-            city_region_pairs: vec![vec![String::from("Tokto"), String::from("Akasaka")]],
+        let city_region_zipcode = CityAndRegionAndZipcode {
+            city_region_pairs: vec![vec!["Tokyo".to_string(), "Shibuya".to_string()]],
             zipcode: vec![zip_code],
+        };
+        let primary_location = PrimaryLocation {
+            primary_location: city_region_zipcode,
         };
         let result = PrimaryLocation::saveToDb(&primary_location, &conn);
         assert_eq!(result, Ok(()));

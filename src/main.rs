@@ -20,14 +20,17 @@ struct Opt {
     directory_name: String,
     //#[structopt(parse(from_os_str))]
     //file: PathBuf,
+    #[structopt(short = "d", long = "dbfile", default_value = "ichnion.db")]
+    dbfile: String,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let conn = Connection::open("ichnion.db")?;
-    db::schema::create_tables(&conn);
-
 
     let args = Opt::from_args();
+
+    let conn = Connection::open(&args.dbfile)?;
+    db::schema::create_tables(&conn);
+
 
     let directory_name = &args.directory_name;
 

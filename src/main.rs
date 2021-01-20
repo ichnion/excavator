@@ -1,7 +1,7 @@
 use rusqlite::{Connection, Result};
 use structopt::StructOpt;
 use activities::facebook::{device_location, primary_location, primary_public_location};
-use activities::google::{location_history, my_activity, saved_places};
+use activities::google::{location_history, my_activity, saved_places, semantic_location_history};
 use walkdir::WalkDir;
 
 mod db;
@@ -19,9 +19,6 @@ struct Opt {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let conn = Connection::open("ichnion.db")?;
-    db::schema::create_tables(&conn);
-
     let args = Opt::from_args();
 
     let conn = Connection::open(&args.dbfile)?;
@@ -72,6 +69,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                 result.saveToDb(&conn);
             }
+            "Semantic\tLocation\tHistory.json" => {
+                println!("processing {}", d_name);
+
+                let rawdata = std::fs::read_to_string(&entry.path())?;
+
+                let result: semantic_location_history::TimeLineObjects = serde_json::from_str(&rawdata)?;
+
+                println!("( {} records )", result.timelineObjects.len());
+                result.saveToDb(&conn);
+            }
+            // Facebook activities
             "device_location.json" => {
                 println!("processing {}", d_name);
 

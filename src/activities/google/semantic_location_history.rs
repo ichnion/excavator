@@ -44,47 +44,47 @@ pub struct PlaceVisitDuration {
 #[allow(non_snake_case)]
 impl TimeLineObjects {
     pub fn saveToDb(&self,conn : &Connection  ) {
-        
+
         for elem in self.timelineObjects.iter() {
 
             if let Some(pVisit) = &elem.placeVisit {
                 let place_name : String;
                 let address    : String;
                 let lat        : i32;
-                let lng        : i32;        
-                
-                if let Some(val) = &pVisit.location.name {    
+                let lng        : i32;
+
+                if let Some(val) = &pVisit.location.name {
                     place_name = val.to_string();
                 }
                 else {
                     place_name = "".to_string();
                 }
-                
-                if let Some(val) = &pVisit.location.address { 
+
+                if let Some(val) = &pVisit.location.address {
                     address = val.to_string();
                 }
                 else {
                     address = "".to_string();
                 }
 
-                if let Some(val) = pVisit.location.latitudeE7 { 
+                if let Some(val) = pVisit.location.latitudeE7 {
                     lat = val;
                 }
                 else {
                     lat = -99;
                 }
-                
-                if let Some(val) = pVisit.location.longitudeE7 { 
+
+                if let Some(val) = pVisit.location.longitudeE7 {
                     lng = val;
                 }
                 else {
                     lng = -99;
                 }
-                
+
                 if lat != -99 && lng != 99 {
-                    conn.execute("insert into google_location_history 
+                    conn.execute("insert into google_location_history
                         (place_name,timestamp_msec,accuracy,address,lat,lng,source)
-                        values(?1, $2, $3, $4, $5/10000000.0, $6/10000000.0,'place_visit')", 
+                        values(?1, $2, $3, $4, $5/10000000.0, $6/10000000.0,'place_visit')",
                         params![
                             place_name,
                             pVisit.duration.startTimestampMs.parse::<i64>().unwrap(),

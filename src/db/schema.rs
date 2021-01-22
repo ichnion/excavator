@@ -160,7 +160,7 @@ pub fn create_tables(conn: &Connection) {
         "CREATE TABLE IF NOT EXISTS facebook_device_location (
             id               INTEGER PRIMARY KEY,
             spn              TEXT,
-            country_code     TEXT,
+            country_code     TEXT
         )",
         NO_PARAMS,
     )
@@ -174,7 +174,7 @@ pub fn create_tables(conn: &Connection) {
         "CREATE TABLE IF NOT EXISTS facebook_primary_location (
             id                INTEGER PRIMARY KEY,
             city_region_pairs TEXT,
-            zipcode           TEXT,
+            zipcode           TEXT
         )",
         NO_PARAMS,
     )
@@ -189,7 +189,7 @@ pub fn create_tables(conn: &Connection) {
             id                INTEGER PRIMARY KEY,
             city              TEXT,
             region            TEXT,
-            country           TEXT,
+            country           TEXT
         )",
         NO_PARAMS,
     )

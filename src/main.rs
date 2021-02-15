@@ -3,7 +3,7 @@ extern crate diesel;
 
 //use crate::trackpoints::places::SavedPlace;
 //use std::path::PathBuf;
-use structopt::StructOpt;
+use structopt::{clap, StructOpt};
 use walkdir::WalkDir;
 
 mod db;

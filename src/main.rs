@@ -11,7 +11,12 @@ mod google;
 mod trackpoints;
 
 #[derive(Debug, StructOpt)]
-#[structopt(name = "excavator")]
+#[structopt(
+    name = "excavator",
+    about = "Visualize your digital footprint",
+    setting(clap::AppSettings::ArgRequiredElseHelp),
+    setting(clap::AppSettings::ColoredHelp)
+)]
 struct Opt {
     command: String,
     directory_name: String,

@@ -3,7 +3,7 @@ extern crate diesel;
 
 //use crate::trackpoints::places::SavedPlace;
 //use std::path::PathBuf;
-use structopt::StructOpt;
+use structopt::{clap, StructOpt};
 use walkdir::WalkDir;
 
 mod db;
@@ -11,7 +11,12 @@ mod google;
 mod trackpoints;
 
 #[derive(Debug, StructOpt)]
-#[structopt(name = "excavator")]
+#[structopt(
+    name = "excavator",
+    about = "Visualize your digital footprint",
+    setting(clap::AppSettings::ArgRequiredElseHelp),
+    setting(clap::AppSettings::ColoredHelp)
+)]
 struct Opt {
     command: String,
     directory_name: String,

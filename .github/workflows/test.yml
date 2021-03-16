@@ -1,28 +1,12 @@
-name: CI
+name: Cargo Test
 
 on:
   push:
-    branches: ['develop']
+    branches: [develop]
   pull_request:
-    branches: ['*']
+    branches: [develop]
 
 jobs:
-  rustfmt:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - run: rustup update stable && rustup default stable
-    - run: rustup component add rustfmt
-    - run: cargo fmt --all -- --check
-
-  clippy:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - run: rustup update stable && rustup default stable
-    - run: rustup component add clippy
-    - run: cargo clippy --all-targets --all-features -- -D warnings
-
   test:
     runs-on: ${{ matrix.os }}
     env:
@@ -58,20 +42,4 @@ jobs:
       if: startsWith(matrix.rust, 'nightly')
     - run: sudo apt update -y && sudo apt install gcc-multilib libsecret-1-0 libsecret-1-dev -y
       if: matrix.os == 'ubuntu-latest'
-    - run: rustup component add rustfmt || echo "rustfmt not available"
     - run: cargo test
-
-  success:
-    name: action finished
-    needs: [rustfmt, clippy, test]
-    runs-on: ubuntu-latest
-    if: "success() && github.event_name == 'push'"
-    steps:
-    - run: echo ok
-  failure:
-    name: action finished
-    needs: [rustfmt, clippy, test]
-    runs-on: ubuntu-latest
-    if: "!success() && github.event_name == 'push'"
-    steps:
-    - run: exit 1

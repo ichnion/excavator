@@ -1,16 +1,16 @@
+use rusqlite::{params, Connection};
 use serde::Deserialize;
-use rusqlite::{Connection,params};
 
 #[allow(non_snake_case)]
 #[derive(Deserialize, Debug)]
 pub struct TimeLineObjects {
-    pub timelineObjects: Vec<TimeLineObject>
+    pub timelineObjects: Vec<TimeLineObject>,
 }
 
 #[allow(non_snake_case)]
 #[derive(Deserialize, Debug)]
 pub struct TimeLineObject {
-    pub placeVisit: Option<PlaceVisit>
+    pub placeVisit: Option<PlaceVisit>,
 }
 
 #[allow(non_snake_case)]
@@ -31,58 +31,53 @@ pub struct PlaceVisitLocation {
     pub placeId: String,
     pub address: Option<String>,
     pub name: Option<String>,
-    pub locationConfidence: f64
+    pub locationConfidence: f64,
 }
 
 #[allow(non_snake_case)]
 #[derive(Deserialize, Debug)]
 pub struct PlaceVisitDuration {
     pub startTimestampMs: String,
-    pub endTimestampMs: String
+    pub endTimestampMs: String,
 }
 
 #[allow(non_snake_case)]
 impl TimeLineObjects {
-    pub fn saveToDb(&self,conn : &Connection  ) {
-
+    pub fn saveToDb(&self, conn: &Connection) {
         for elem in self.timelineObjects.iter() {
-
             if let Some(pVisit) = &elem.placeVisit {
-                let place_name : String;
-                let address    : String;
-                let lat        : i32;
-                let lng        : i32;
+                let place_name: String;
+                let address: String;
+                let lat: i32;
+                let lng: i32;
 
                 if let Some(val) = &pVisit.location.name {
                     place_name = val.to_string();
-                }
-                else {
+                } else {
                     place_name = "".to_string();
                 }
 
                 if let Some(val) = &pVisit.location.address {
                     address = val.to_string();
-                }
-                else {
+                } else {
                     address = "".to_string();
                 }
 
                 if let Some(val) = pVisit.location.latitudeE7 {
                     lat = val;
-                }
-                else {
+                } else {
                     lat = -99;
                 }
 
                 if let Some(val) = pVisit.location.longitudeE7 {
                     lng = val;
-                }
-                else {
+                } else {
                     lng = -99;
                 }
 
                 if lat != -99 && lng != 99 {
-                    conn.execute("insert into google_location_history
+                    conn.execute(
+                        "insert into google_location_history
                         (place_name,timestamp_msec,accuracy,address,lat,lng,source)
                         values(?1, $2, $3, $4, $5/10000000.0, $6/10000000.0,'place_visit')",
                         params![
@@ -92,8 +87,9 @@ impl TimeLineObjects {
                             address,
                             lat,
                             lng
-                        ]
-                    )/*.map_err(|err| println!("{:?}", err))*/.ok();
+                        ],
+                    ) /*.map_err(|err| println!("{:?}", err))*/
+                    .ok();
                 }
             }
         }

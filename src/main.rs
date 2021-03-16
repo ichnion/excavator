@@ -1,18 +1,20 @@
 use rusqlite::{Connection, Result};
 use structopt::StructOpt;
-use activities::facebook::{device_location, primary_location, primary_public_location};
-use activities::google::{location_history, my_activity, saved_places, semantic_location_history};
 use walkdir::WalkDir;
 
-mod db;
-mod activities;
+use excavator::activities::google::{location_history, saved_places, semantic_location_history};
+use excavator::activities::{
+    facebook::{device_location, primary_public_location},
+    MyActivity, PrimaryLocation,
+};
+use excavator::db::schema;
 
 #[derive(Debug, StructOpt)]
 #[structopt(
     name = "excavator",
     about = "Visualize your digital footprint",
-    setting(clap::AppSettings::ArgRequiredElseHelp),
-    setting(clap::AppSettings::ColoredHelp)
+    setting(structopt::clap::AppSettings::ArgRequiredElseHelp),
+    setting(structopt::clap::AppSettings::ColoredHelp)
 )]
 struct Opt {
     command: String,
@@ -27,8 +29,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Opt::from_args();
 
     let conn = Connection::open(&args.dbfile)?;
-    db::schema::create_tables(&conn);
-
+    schema::create_tables(&conn);
 
     let directory_name = &args.directory_name;
 
@@ -47,7 +48,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                 let rawdata = std::fs::read_to_string(&entry.path())?;
 
-                let result: Vec<my_activity::MyActivity> = serde_json::from_str(&rawdata)?;
+                let result: Vec<MyActivity> = serde_json::from_str(&rawdata)?;
 
                 for elem in result.iter() {
                     elem.saveToDb(&conn);
@@ -79,7 +80,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                 let rawdata = std::fs::read_to_string(&entry.path())?;
 
-                let result: semantic_location_history::TimeLineObjects = serde_json::from_str(&rawdata)?;
+                let result: semantic_location_history::TimeLineObjects =
+                    serde_json::from_str(&rawdata)?;
 
                 println!("( {} records )", result.timelineObjects.len());
                 result.saveToDb(&conn);
@@ -102,7 +104,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                 let rawdata = std::fs::read_to_string(&entry.path())?;
 
-                let result: primary_location::PrimaryLocation = serde_json::from_str(&rawdata)?;
+                let result: PrimaryLocation = serde_json::from_str(&rawdata)?;
 
                 let response = result.saveToDb(&conn)?;
 

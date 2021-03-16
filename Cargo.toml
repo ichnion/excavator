@@ -13,3 +13,8 @@ serde_json = "1.0"
 walkdir = "2"
 uuid = { version = "0.8", features = ["serde", "v4"] }
 rusqlite = "0.24.2"
+
+[[bin]]
+bench = false
+path = "src/main.rs"
+name = "kenall-rs"

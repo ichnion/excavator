@@ -11,8 +11,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-      os: [ubuntu-latest, macOS-latest, windows-latest]
-      rust: [stable]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        rust: [stable]
 
     env:
       CARGO_PROFILE_DEV_DEBUG: 1

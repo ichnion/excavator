@@ -9,7 +9,7 @@ use rusqlite::{params, Connection};
 pub struct MyActivity {
     pub header        : String,
     pub title         : String,
-    pub subtitles     : Option<Vec<SubTitle>>,    
+    pub subtitles     : Option<Vec<SubTitle>>,
     pub titleUrl      : Option<String>,
     pub time          : String,
     pub products      : Vec<String>,
@@ -41,19 +41,19 @@ pub struct SubTitle {
 #[rustfmt::skip]
 #[allow(non_snake_case)]
 impl MyActivity {
-    pub fn saveToDb(&self,conn: &Connection) {
+    pub fn saveToDb(&self, conn: &Connection) -> Result<(), rusqlite::Error> {
 
         let my_uuid = Uuid::new_v4();
         let title_url = self.titleUrl.as_ref(); //clone();
 
-        conn.execute("insert into google_my_activity (
+        conn.execute("INSERT INTO google_my_activity (
                 uuid,
                 header,
                 title,
                 title_url,
                 time
             )
-            values (?1, ?2, ?3, ?4, ?5)", 
+            VALUES (?1, ?2, ?3, ?4, ?5)",
             params![
                 &my_uuid.to_string(),
                 &self.header,
@@ -63,56 +63,101 @@ impl MyActivity {
             ]
         ).ok();
 
-        if let Some(ref vec) = self.subtitles {
-            for i in vec {
+        if let Some(ref subtitles) = self.subtitles {
+            let _ = subtitles.iter().map(|subtitle|
                 conn.execute(
-                    "insert into activity_sub_title 
-                        (a_uuid, name, url) values (?1, ?2, ?3)", 
+                    "INSERT INTO activity_sub_title
+                        (a_uuid, name, url) values (?1, ?2, ?3)",
                     params![
                         &my_uuid.to_string(),
-                        &i.name.to_string(),
-                        &i.url.as_ref().unwrap_or(&String::from("")).to_string()
+                        &subtitle.name.to_string(),
+                        &subtitle.url.as_ref().unwrap_or(&String::from("")).to_string()
                     ]
-                ).ok();                
-            }
+                ).ok()
+            );
         }
 
-        if let Some(ref vec) = self.locationInfos {
-            for i in vec {
+        if let Some(ref location_infos) = self.locationInfos {
+            let _ = location_infos.iter().map(|location_info|
                 conn.execute(
-                    "insert into activity_location_info
+                    "INSERT INTO activity_location_info
                         (a_uuid, name, url, source)
-                        values (?1, ?2, ?3, ?4)",
+                        VALUES (?1, ?2, ?3, ?4)",
                     params![
                         &my_uuid.to_string(),
-                        &i.name.to_string(),
-                        &i.url.to_string(),
-                        &i.source.to_string()
+                        &location_info.name.to_string(),
+                        &location_info.url.to_string(),
+                        &location_info.source.to_string()
                     ]
-                ).ok();                
-            }
+                ).ok()
+            );
         }
 
-        if let Some(ref vec) = self.details {
-            for i in vec {
+        if let Some(ref details) = self.details {
+            let _ = details.iter().map(|detail|
                 conn.execute(
-                    "insert into activity_details (a_uuid, name) 
-                     values (?1, ?2)", 
+                    "INSERT INTO activity_details (a_uuid, name)
+                     VALUES (?1, ?2)",
                     params![
-                        &my_uuid.to_string(), &i.name.to_string()
+                        &my_uuid.to_string(), &detail.name.to_string()
                     ]
-                ).ok();
-            }
+                ).ok()
+            );
         }
 
-        for p in &self.products {
+        let _ = &self.products.iter().map(|product|
             conn.execute(
-                "insert into activity_products (a_uuid,name) 
-                 values (?1, ?2)",
+                "INSERT INTO activity_products (a_uuid,name)
+                 VALUES (?1, ?2)",
                 params![
-                    &my_uuid.to_string(), &p.to_string()
+                    &my_uuid.to_string(), &product.to_string()
                 ]
-            ).ok();
-        }
+            ).ok()
+        );
+
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rusqlite::Connection;
+
+    #[test]
+    fn test_my_activities() -> Result<(), Box<dyn std::error::Error>> {
+        let conn = Connection::open("ichnion.db")?;
+
+        let location_info = LocationInfo {
+            name: "name".to_string(),
+            url: "https://locationinfo.com".to_string(),
+            source: "".to_string(),
+        };
+
+        let subtitle = SubTitle {
+            name: "subtitle".to_string(),
+            url: Some("https://subtitle.com".to_string()),
+        };
+
+        let detail = Details {
+            name: "Test details".to_string(),
+        };
+
+        let my_activity = MyActivity {
+            header: "test header".to_string(),
+            title: "test title".to_string(),
+            subtitles: Some(vec![subtitle]),
+            titleUrl: Some("https://testtitle.com".to_string()),
+            time: "2020/10/10/10:10".to_string(),
+            products: vec!["test product".to_string()],
+            details: Some(vec![detail]),
+            locationInfos: Some(vec![location_info]),
+        };
+
+        let result = MyActivity::saveToDb(&my_activity, &conn);
+
+        assert_eq!(result, Ok(()));
+
+        Ok(())
     }
 }

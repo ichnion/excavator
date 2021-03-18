@@ -38,44 +38,74 @@ pub struct Activities {
 
 #[allow(non_snake_case)]
 impl LocationHistory {
-    pub fn saveToDb(&self, conn: &Connection) {
-        for elem in self.locations.iter() {
-            let activity: String;
-            let altitude: i32;
-            let verticalAccuracy: i32;
+    pub fn saveToDb(&self, conn: &Connection) -> Result<(), rusqlite::Error> {
+        let _ = self.locations.iter().map(|x| {
+            let altitude = x.altitude.unwrap_or(0);
+            let timestamp = x.timestampMs.parse::<i64>().unwrap_or(0);
+            let verticalAccuracy = x.verticalAccuracy.unwrap_or(0);
+            let activity = match &x.activity {
+                Some(t) => t[0].activity[0].r#type.to_string(),
+                None => "na".to_string(),
+            };
 
-            if let Some(val) = elem.altitude {
-                altitude = val;
-            } else {
-                altitude = 0;
-            }
-
-            if let Some(val) = elem.verticalAccuracy {
-                verticalAccuracy = val;
-            } else {
-                verticalAccuracy = 0;
-            }
-
-            if let Some(act) = &elem.activity {
-                activity = act[0].activity[0].r#type.to_string();
-            } else {
-                activity = "na".to_string();
-            }
             conn.execute(
-                "insert into google_location_history
-                (activity,timestamp_msec,accuracy,verticalaccuracy,altitude,lat,lng,source)
+                "INSERT into google_location_history
+                (activity, timestamp_msec,accuracy, verticalaccuracy, altitude, lat, lng, source)
                 values(?1, $2, $3, $4, $5, $6/10000000.0, $7/10000000.0,'location_history')",
                 params![
                     &activity,
-                    elem.timestampMs.parse::<i64>().unwrap(),
-                    elem.accuracy,
+                    timestamp,
+                    x.accuracy,
                     verticalAccuracy,
                     altitude,
-                    elem.latitudeE7,
-                    elem.longitudeE7
+                    x.latitudeE7,
+                    x.longitudeE7
                 ],
-            ) /*.map_err(|err| println!("{:?}", err))*/
-            .ok();
-        }
+            )
+            .map_err(|err| println!("{:?}", err))
+            .ok()
+        });
+
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rusqlite::Connection;
+
+    #[test]
+    fn test_location_history() -> Result<(), Box<dyn std::error::Error>> {
+        let conn = Connection::open("ichnion.db")?;
+        let activities = Activities {
+            r#type: "".to_string(),
+            confidence: 0,
+        };
+
+        let activity = Activity {
+            timestampMs: "".to_string(),
+            activity: vec![activities],
+        };
+
+        let location = Locations {
+            timestampMs: "".to_string(),
+            latitudeE7: 0,
+            longitudeE7: 0,
+            accuracy: 0,
+            altitude: Some(0),
+            verticalAccuracy: Some(0),
+            activity: Some(vec![activity]),
+        };
+
+        let location_history = LocationHistory {
+            locations: vec![location],
+        };
+
+        let result = LocationHistory::saveToDb(&location_history, &conn);
+
+        assert_eq!(result, Ok(()));
+
+        Ok(())
     }
 }

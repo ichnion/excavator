@@ -13,6 +13,7 @@ pub struct PrimaryLocation {
 #[allow(non_snake_case)]
 #[derive(Deserialize, Debug)]
 pub struct CityAndRegionAndZipcode {
+  // TODO: change data structure
   pub city_region_pairs:  Vec<Vec<String>>,
   pub zipcode:  Vec<String>
 }
@@ -22,19 +23,20 @@ impl PrimaryLocation {
     pub fn saveToDb(&self, conn: &Connection) -> Result<(), rusqlite::Error> {
         let my_uuid = Uuid::new_v4();
 
-        for elem in self.primary_location.city_region_pairs.iter() {
+        let _ = self.primary_location.city_region_pairs.iter().map(|x| {
             conn.execute(
                 "INSERT INTO facebook_primary_location (
-              uuid,
-              city,
-              region,
-          )
-          VALUES (?1, ?2, ?3)",
-                params![&my_uuid.to_string(), &elem[0], &elem[1]],
+                    uuid,
+                    city,
+                    region,
+                )
+                VALUES (?1, ?2, ?3)",
+                params![my_uuid.to_string(), &x[0], &x[1]],
             )
             .map_err(|err| println!("{:?}", err))
-            .ok();
-        }
+            .ok()
+        });
+
         Ok(())
     }
 }

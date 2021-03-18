@@ -51,7 +51,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let result: Vec<MyActivity> = serde_json::from_str(&rawdata)?;
 
                 for elem in result.iter() {
-                    elem.saveToDb(&conn);
+                    elem.saveToDb(&conn)?;
                 }
                 println!("( {} records )", result.len());
             }
@@ -62,7 +62,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                 let result: location_history::LocationHistory = serde_json::from_str(&rawdata)?;
 
-                result.saveToDb(&conn);
+                result.saveToDb(&conn)?;
 
                 println!("( {} records )", result.locations.len());
             }
@@ -73,7 +73,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                 let result: saved_places::SavedPlace = serde_json::from_str(&rawdata)?;
 
-                result.saveToDb(&conn);
+                result.saveToDb(&conn)?;
             }
             "Semantic\tLocation\tHistory.json" => {
                 println!("processing {}", d_name);
@@ -84,7 +84,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     serde_json::from_str(&rawdata)?;
 
                 println!("( {} records )", result.timelineObjects.len());
-                result.saveToDb(&conn);
+                result.saveToDb(&conn)?;
             }
             // Facebook activities
             "device_location.json" => {

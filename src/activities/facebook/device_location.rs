@@ -21,19 +21,20 @@ impl DeviceLocation {
     pub fn saveToDb(&self, conn: &Connection) -> Result<(), rusqlite::Error> {
         let my_uuid = Uuid::new_v4();
 
-        for elem in self.phone_number_location.iter() {
+        let _ = self.phone_number_location.iter().map(|x| {
             conn.execute(
                 "INSERT INTO facebook_device_location (
-              uuid,
-              spn,
-              country_code
-          )
-          VALUES (?1, ?2, ?3)",
-                params![my_uuid.to_string(), &elem.spn, &elem.country_code,],
+                    uuid,
+                    spn,
+                    country_code
+                )
+                VALUES (?1, ?2, ?3)",
+                params![my_uuid.to_string(), &x.spn, &x.country_code],
             )
             .map_err(|err| println!("{:?}", err))
-            .ok();
-        }
+            .ok()
+        });
+
         Ok(())
     }
 }

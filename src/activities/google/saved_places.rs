@@ -52,15 +52,14 @@ pub struct SavedPlace {
     pub features: Vec<Element>,
 }
 
-#[rustfmt::skip]
 #[allow(non_snake_case)]
 impl SavedPlace {
-    pub fn saveToDb(&self,conn: &Connection) {
+    pub fn saveToDb(&self, conn: &Connection) -> Result<(), rusqlite::Error> {
         let my_uuid = Uuid::new_v4();
 
-            for elem in &self.features {
-                conn.execute(
-                    "INSERT INTO google_my_activity (
+        let _ = self.features.iter().map(|feature| {
+            conn.execute(
+                "INSERT INTO google_my_activity (
                         uuid,
                         name,
                         address,
@@ -69,15 +68,71 @@ impl SavedPlace {
                         lng
                     )
                     VALUES (?1, ?2, ?3, ?4, ?5)",
-                    params![
-                        &my_uuid.to_string(),
-                        &elem.properties.location.business_name,
-                        &elem.properties.location.address,
-                        &elem.properties.google_maps_url,
-                        &elem.properties.location.geo_coordinate.latitude,
-                        &elem.properties.location.geo_coordinate.longitude,
-                    ]
-                ).ok();
-            }
+                params![
+                    &my_uuid.to_string(),
+                    &feature.properties.location.business_name,
+                    &feature.properties.location.address,
+                    &feature.properties.google_maps_url,
+                    &feature.properties.location.geo_coordinate.latitude,
+                    &feature.properties.location.geo_coordinate.longitude,
+                ],
+            )
+            .ok();
+        });
+
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rusqlite::Connection;
+
+    #[test]
+    fn test_saved_places() -> Result<(), Box<dyn std::error::Error>> {
+        let conn = Connection::open("ichnion.db")?;
+
+        let _geometry = Geometry {
+            coordinates: vec![0.1, 0.2, 0.3, 0.4],
+            r#type: "".to_string(),
+        };
+
+        let coordinate = Coordinate {
+            latitude: "35.681168".to_string(),
+            longitude: "139.767059".to_string(),
+        };
+
+        let _location = Location {
+            address: Some("Tokyo".to_string()),
+            business_name: Some("Test".to_string()),
+            country_code: Some("+81".to_string()),
+            geo_coordinate: coordinate,
+        };
+
+        let property = Property {
+            google_maps_url: "https://www.google.com/maps/dir/?api=1&test".to_string(),
+            location: _location,
+            published: "".to_string(),
+            title: "title".to_string(),
+            updated: "".to_string(),
+        };
+
+        let element = Element {
+            geometry: _geometry,
+            properties: property,
+            r#type: "".to_string(),
+        };
+
+        let saved_place = SavedPlace {
+            r#type: "".to_string(),
+            features: vec![element],
+        };
+
+        let result = SavedPlace::saveToDb(&saved_place, &conn);
+
+        assert_eq!(result, Ok(()));
+
+        Ok(())
     }
 }

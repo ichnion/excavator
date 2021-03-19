@@ -1,4 +1,7 @@
+use indicatif::{ProgressBar, ProgressStyle};
 use rusqlite::{Connection, Result};
+use std::thread;
+use std::time::Duration;
 use structopt::StructOpt;
 use walkdir::WalkDir;
 
@@ -30,8 +33,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let conn = Connection::open(&args.dbfile)?;
     schema::create_tables(&conn);
-
     let directory_name = &args.directory_name;
+
+    let total_count = WalkDir::new(directory_name).into_iter().count();
+    let pb = ProgressBar::new(total_count as u64);
+    pb.set_style(
+        ProgressStyle::default_bar()
+            .template(
+                "{spinner:.purple} [{elapsed_precise}] [{bar:70.cyan/blue}] ({pos}/{len}, ETA \
+                 {eta})",
+            )
+            .progress_chars("#>-"),
+    );
 
     for entry in WalkDir::new(directory_name)
         .follow_links(true)
@@ -44,7 +57,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         match file_name {
             "MyActivity.json" | "search-history.json" | "watch-history.json" => {
-                print!("processing {}", d_name);
+                println!("processing {}", d_name);
 
                 let rawdata = std::fs::read_to_string(&entry.path())?;
 
@@ -56,7 +69,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("( {} records )", result.len());
             },
             "Location History.json" => {
-                print!("processing {}", d_name);
+                println!("processing {}", d_name);
 
                 let rawdata = std::fs::read_to_string(&entry.path())?;
 
@@ -125,10 +138,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let response = result.saveToDb(&conn)?;
                 println!("{:?}", response);
             },
-            _ => println!("No files are matched"),
+            _ => println!("No file matched"),
         }
     }
 
-    println!("\n*** process completed ***");
+    for i in 0..=total_count {
+        pb.set_position(i as u64);
+        thread::sleep(Duration::from_millis(124));
+    }
+
     Ok(())
 }

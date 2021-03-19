@@ -41,7 +41,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let f_name = entry.file_name().to_string_lossy();
         let d_name = entry.path().to_string_lossy();
         let file_name = f_name.as_ref();
-        println!("file_name: {:?}", file_name);
+
         match file_name {
             "MyActivity.json" | "search-history.json" | "watch-history.json" => {
                 print!("processing {}", d_name);
@@ -55,7 +55,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 println!("( {} records )", result.len());
             },
-            "Location\tHistory.json" => {
+            "Location History.json" => {
                 print!("processing {}", d_name);
 
                 let rawdata = std::fs::read_to_string(&entry.path())?;
@@ -66,7 +66,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                 println!("( {} records )", result.locations.len());
             },
-            "Saved\tPlace.json" => {
+            "Saved Place.json" => {
                 println!("processing {}", d_name);
 
                 let rawdata = std::fs::read_to_string(&entry.path())?;
@@ -75,7 +75,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                 result.saveToDb(&conn)?;
             },
-            "Semantic\tLocation\tHistory.json" => {
+            "Semantic Location History.json" => {
                 println!("processing {}", d_name);
 
                 let rawdata = std::fs::read_to_string(&entry.path())?;

@@ -2,9 +2,7 @@ use rusqlite::Connection;
 use rusqlite::NO_PARAMS;
 
 pub fn create_tables(conn: &Connection) {
-    /*
-     * google_my_activity
-     */
+    // google_my_activity
     conn.execute(
         "CREATE TABLE IF NOT EXISTS  google_my_activity (
             uuid      TEXT NOT NULL PRIMARY KEY,
@@ -19,9 +17,7 @@ pub fn create_tables(conn: &Connection) {
     .map_err(|err| println!("{:?}", err))
     .ok();
 
-    /*
-     * activity_location_info
-     */
+    // activity_location_info
     conn.execute(
         "CREATE TABLE IF NOT EXISTS activity_location_info (
             id     INTEGER PRIMARY KEY,
@@ -43,9 +39,7 @@ pub fn create_tables(conn: &Connection) {
     .map_err(|err| println!("{:?}", err))
     .ok();
 
-    /*
-     * activity_sub_title
-     */
+    // activity_sub_title
     conn.execute(
         "CREATE TABLE IF NOT EXISTS activity_sub_title (
            id     INTEGER PRIMARY KEY,
@@ -66,9 +60,7 @@ pub fn create_tables(conn: &Connection) {
     .map_err(|err| println!("{:?}", err))
     .ok();
 
-    /*
-     * activity_details
-     */
+    // activity_details
     conn.execute(
         "CREATE TABLE IF NOT EXISTS activity_details (
             id     INTEGER PRIMARY KEY,
@@ -88,9 +80,7 @@ pub fn create_tables(conn: &Connection) {
     .map_err(|err| println!("{:?}", err))
     .ok();
 
-    /*
-     * activity_products
-     */
+    // activity_products
     conn.execute(
         "CREATE TABLE IF NOT EXISTS activity_products (
             id     INTEGER PRIMARY KEY,
@@ -110,9 +100,7 @@ pub fn create_tables(conn: &Connection) {
     .map_err(|err| println!("{:?}", err))
     .ok();
 
-    /*
-     * google_location_history
-     */
+    // google_location_history
     conn.execute(
         "CREATE TABLE IF NOT EXISTS google_location_history (
             id               INTEGER PRIMARY KEY,
@@ -133,9 +121,7 @@ pub fn create_tables(conn: &Connection) {
     .map_err(|err| println!("{:?}", err))
     .ok();
 
-    /*
-     * google_saved_places
-     */
+    // google_saved_places
     conn.execute(
         "CREATE TABLE IF NOT EXISTS google_saved_places (
             id               INTEGER PRIMARY KEY,
@@ -153,9 +139,7 @@ pub fn create_tables(conn: &Connection) {
     .map_err(|err| println!("{:?}", err))
     .ok();
 
-    /*
-     * facebook_device_location
-     */
+    // facebook_device_location
     conn.execute(
         "CREATE TABLE IF NOT EXISTS facebook_device_location (
             id               INTEGER PRIMARY KEY,
@@ -167,9 +151,7 @@ pub fn create_tables(conn: &Connection) {
     .map_err(|err| println!("{:?}", err))
     .ok();
 
-    /*
-     * facebook_primary_location
-     */
+    // facebook_primary_location
     conn.execute(
         "CREATE TABLE IF NOT EXISTS facebook_primary_location (
             id                INTEGER PRIMARY KEY,
@@ -181,9 +163,7 @@ pub fn create_tables(conn: &Connection) {
     .map_err(|err| println!("{:?}", err))
     .ok();
 
-    /*
-     * facebook_primary_public_location
-     */
+    // facebook_primary_public_location
     conn.execute(
         "CREATE TABLE IF NOT EXISTS facebook_primary_public_location (
             id                INTEGER PRIMARY KEY,

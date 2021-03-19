@@ -20,7 +20,7 @@ struct Opt {
     command: String,
     directory_name: String,
     //#[structopt(parse(from_os_str))]
-    //file: PathBuf,
+    // file: PathBuf,
     #[structopt(short = "d", long = "dbfile", default_value = "ichnion.db")]
     dbfile: String,
 }
@@ -54,7 +54,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     elem.saveToDb(&conn)?;
                 }
                 println!("( {} records )", result.len());
-            }
+            },
             "Location\tHistory.json" => {
                 print!("processing {}", d_name);
 
@@ -65,7 +65,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 result.saveToDb(&conn)?;
 
                 println!("( {} records )", result.locations.len());
-            }
+            },
             "Saved\tPlace.json" => {
                 println!("processing {}", d_name);
 
@@ -74,7 +74,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let result: saved_places::SavedPlace = serde_json::from_str(&rawdata)?;
 
                 result.saveToDb(&conn)?;
-            }
+            },
             "Semantic\tLocation\tHistory.json" => {
                 println!("processing {}", d_name);
 
@@ -85,7 +85,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                 println!("( {} records )", result.timelineObjects.len());
                 result.saveToDb(&conn)?;
-            }
+            },
             // Facebook activities
             "device_location.json" => {
                 println!("processing {}", d_name);
@@ -98,7 +98,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                 println!("( {} records )", result.phone_number_location.len());
                 println!("{:?}", response);
-            }
+            },
             "primary_location.json" => {
                 println!("processing {}", d_name);
 
@@ -113,7 +113,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     result.primary_location.city_region_pairs.len()
                 );
                 println!("{:?}", response);
-            }
+            },
             "primary_public_location.json" => {
                 println!("processing {}", d_name);
 
@@ -124,7 +124,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                 let response = result.saveToDb(&conn)?;
                 println!("{:?}", response);
-            }
+            },
             _ => println!("No files are matched"),
         }
     }

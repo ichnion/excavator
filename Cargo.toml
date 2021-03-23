@@ -1,9 +1,14 @@
 [package]
 name = "excavator"
 version = "0.1.1"
-authors = ["chansuke <chansuke@georepublic.de>"]
+authors = ["chansuke <chansuke@georepublic.de>", "Mario Basa <mario.basa@georepublic.de>"]
 description = "Visualize your digital footprint"
 edition = "2018"
+license = "GPLv3"
+rds = ["cli"]
+categories = ["command-line-utilities"]
+homepage = "https://ichnion.github.io/website/"
+readme = "README.md"
 
 [dependencies]
 clap = "3.0.0-beta.2"

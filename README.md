@@ -20,7 +20,7 @@ $ cargo install --git https://github.com/ichnion/excavator --branch develop
 You can also install from package registry.
 
 ```sh
-cargo install excavator
+$ cargo install excavator
 ```
 
 ### Install from Homebrew

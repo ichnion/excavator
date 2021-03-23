@@ -17,7 +17,11 @@ $ cargo install --git https://github.com/ichnion/excavator --branch develop
 ```
 
 ### Install from crates.io
-TBD
+You can also install from package registry.
+
+```sh
+cargo install excavator
+```
 
 ### Install from Homebrew
 TBD
@@ -33,7 +37,7 @@ $ excavator read ~/Downloads/Takeout // Downloaded Google Takeout directory
 ```
 
 Or you can specify the single file
-
+cargo install
 ```sh
 $ excavator read Location History.json // A single file from downloaded Google Takeout
 ```

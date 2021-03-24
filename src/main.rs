@@ -46,6 +46,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .progress_chars("#>-"),
     );
 
+    for i in 0..=total_count {
+        pb.set_position(i as u64);
+        thread::sleep(Duration::from_millis(124));
+    }
+
     for entry in WalkDir::new(directory_name)
         .follow_links(true)
         .into_iter()
@@ -53,98 +58,89 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     {
         let f_name = entry.file_name().to_string_lossy();
         let d_name = entry.path().to_string_lossy();
-        let file_name = f_name.as_ref();
 
-        match file_name {
-            "MyActivity.json" | "search-history.json" | "watch-history.json" => {
-                println!("processing {}", d_name);
+        if f_name.starts_with("MyActivity.json")
+            || f_name.starts_with("search-history.json")
+            || f_name.starts_with("watch-history.json")
+        {
+            println!("processing {}", d_name);
 
-                let rawdata = std::fs::read_to_string(&entry.path())?;
+            let rawdata = std::fs::read_to_string(&entry.path())?;
 
-                let result: Vec<MyActivity> = serde_json::from_str(&rawdata)?;
+            let result: Vec<MyActivity> = serde_json::from_str(&rawdata)?;
 
-                for elem in result.iter() {
-                    elem.saveToDb(&conn)?;
-                }
-                println!("( {} records )", result.len());
-            },
-            "Location History.json" => {
-                println!("processing {}", d_name);
+            for elem in result.iter() {
+                elem.saveToDb(&conn)?;
+            }
+            println!("( {} records )", result.len());
+        } else if f_name.starts_with("Location History.json") {
+            println!("processing {}", d_name);
 
-                let rawdata = std::fs::read_to_string(&entry.path())?;
+            let rawdata = std::fs::read_to_string(&entry.path())?;
 
-                let result: location_history::LocationHistory = serde_json::from_str(&rawdata)?;
+            let result: location_history::LocationHistory = serde_json::from_str(&rawdata)?;
 
-                result.saveToDb(&conn)?;
+            result.saveToDb(&conn)?;
 
-                println!("( {} records )", result.locations.len());
-            },
-            "Saved Place.json" => {
-                println!("processing {}", d_name);
+            println!("( {} records )", result.locations.len());
+        } else if f_name.starts_with(
+            "
+            Saved Place.json",
+        ) {
+            println!("processing {}", d_name);
 
-                let rawdata = std::fs::read_to_string(&entry.path())?;
+            let rawdata = std::fs::read_to_string(&entry.path())?;
 
-                let result: saved_places::SavedPlace = serde_json::from_str(&rawdata)?;
+            let result: saved_places::SavedPlace = serde_json::from_str(&rawdata)?;
 
-                result.saveToDb(&conn)?;
-            },
-            "Semantic Location History.json" => {
-                println!("processing {}", d_name);
+            result.saveToDb(&conn)?;
+        } else if d_name.contains("Semantic Location History") && f_name.ends_with(".json") {
+            println!("processing {}", d_name);
 
-                let rawdata = std::fs::read_to_string(&entry.path())?;
+            let rawdata = std::fs::read_to_string(&entry.path())?;
 
-                let result: semantic_location_history::TimeLineObjects =
-                    serde_json::from_str(&rawdata)?;
+            let result: semantic_location_history::TimeLineObjects =
+                serde_json::from_str(&rawdata)?;
 
-                println!("( {} records )", result.timelineObjects.len());
-                result.saveToDb(&conn)?;
-            },
-            // Facebook activities
-            "device_location.json" => {
-                println!("processing {}", d_name);
+            println!("( {} records )", result.timelineObjects.len());
+            result.saveToDb(&conn)?;
+        // Facebook activities
+        } else if f_name.starts_with("device_location.json") {
+            println!("processing {}", d_name);
 
-                let rawdata = std::fs::read_to_string(&entry.path())?;
+            let rawdata = std::fs::read_to_string(&entry.path())?;
 
-                let result: device_location::DeviceLocation = serde_json::from_str(&rawdata)?;
+            let result: device_location::DeviceLocation = serde_json::from_str(&rawdata)?;
 
-                let response = result.saveToDb(&conn)?;
+            let response = result.saveToDb(&conn)?;
 
-                println!("( {} records )", result.phone_number_location.len());
-                println!("{:?}", response);
-            },
-            "primary_location.json" => {
-                println!("processing {}", d_name);
+            println!("( {} records )", result.phone_number_location.len());
+            println!("{:?}", response);
+        } else if f_name.starts_with("primary_location.json") {
+            println!("processing {}", d_name);
 
-                let rawdata = std::fs::read_to_string(&entry.path())?;
+            let rawdata = std::fs::read_to_string(&entry.path())?;
 
-                let result: PrimaryLocation = serde_json::from_str(&rawdata)?;
+            let result: PrimaryLocation = serde_json::from_str(&rawdata)?;
 
-                let response = result.saveToDb(&conn)?;
+            let response = result.saveToDb(&conn)?;
 
-                println!(
-                    "( {} records )",
-                    result.primary_location.city_region_pairs.len()
-                );
-                println!("{:?}", response);
-            },
-            "primary_public_location.json" => {
-                println!("processing {}", d_name);
+            println!(
+                "( {} records )",
+                result.primary_location.city_region_pairs.len()
+            );
+            println!("{:?}", response);
+        } else if f_name.starts_with("primary_public_location.json") {
+            println!("processing {}", d_name);
 
-                let rawdata = std::fs::read_to_string(&entry.path())?;
+            let rawdata = std::fs::read_to_string(&entry.path())?;
 
-                let result: primary_public_location::PrimaryPublicLocation =
-                    serde_json::from_str(&rawdata)?;
+            let result: primary_public_location::PrimaryPublicLocation =
+                serde_json::from_str(&rawdata)?;
 
-                let response = result.saveToDb(&conn)?;
-                println!("{:?}", response);
-            },
-            _ => println!("No file matched"),
+            let response = result.saveToDb(&conn)?;
+            println!("{:?}", response);
         }
-    }
-
-    for i in 0..=total_count {
-        pb.set_position(i as u64);
-        thread::sleep(Duration::from_millis(124));
     }
 
     Ok(())

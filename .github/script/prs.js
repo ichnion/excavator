@@ -11,7 +11,7 @@ module.exports = async ({github, path}) => {
     console.log(logs);
 
     const { data } = await github.pulls.list({
-        owner: 'chansuke',
+        owner: 'ichnion',
         repo: 'excavator',
         base: 'develop',
         state: 'closed',

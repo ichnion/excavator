@@ -25,7 +25,10 @@ $ cargo install excavator
 ```
 
 ### Install from Homebrew
-TBD
+```sh
+$ brew tap ichnion/tap
+$ brew install excavator
+```
 
 ## How to use Excavator
 Excavator read and store your exported digital data.

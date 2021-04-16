@@ -18,8 +18,8 @@ pub struct TimeLineObject {
 pub struct PlaceVisit {
     pub location: PlaceVisitLocation,
     pub duration: PlaceVisitDuration,
-    pub centerLatE7: i32,
-    pub centerLngE7: i32,
+    pub centerLatE7: Option<i32>,
+    pub centerLngE7: Option<i32>,
     pub visitConfidence: i32,
 }
 
@@ -109,8 +109,8 @@ mod tests {
         let place_visit = PlaceVisit {
             location: place_visit_location,
             duration: place_visit_duration,
-            centerLatE7: 0,
-            centerLngE7: 0,
+            centerLatE7: Some(0),
+            centerLngE7: Some(0),
             visitConfidence: 0,
         };
         let timeline_object = TimeLineObject {

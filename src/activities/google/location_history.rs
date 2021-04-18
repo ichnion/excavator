@@ -39,11 +39,11 @@ pub struct Activities {
 #[allow(non_snake_case)]
 impl LocationHistory {
     pub fn saveToDb(&self, conn: &Connection) -> Result<(), rusqlite::Error> {
-        let _ = self.locations.iter().map(|x| {
-            let altitude = x.altitude.unwrap_or(0);
-            let timestamp = x.timestampMs.parse::<i64>().unwrap_or(0);
-            let verticalAccuracy = x.verticalAccuracy.unwrap_or(0);
-            let activity = match &x.activity {
+        for elem in self.locations.iter() {
+            let altitude = elem.altitude.unwrap_or(0);
+            let timestamp = elem.timestampMs.parse::<i64>().unwrap_or(0);
+            let verticalAccuracy = elem.verticalAccuracy.unwrap_or(0);
+            let activity = match &elem.activity {
                 Some(t) => t[0].activity[0].r#type.to_string(),
                 None => "na".to_string(),
             };
@@ -55,16 +55,16 @@ impl LocationHistory {
                 params![
                     &activity,
                     timestamp,
-                    x.accuracy,
+                    elem.accuracy,
                     verticalAccuracy,
                     altitude,
-                    x.latitudeE7,
-                    x.longitudeE7
+                    elem.latitudeE7,
+                    elem.longitudeE7
                 ],
             )
             .map_err(|err| println!("{:?}", err))
-            .ok()
-        });
+            .ok();
+        }
 
         Ok(())
     }

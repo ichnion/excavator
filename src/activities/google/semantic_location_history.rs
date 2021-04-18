@@ -44,8 +44,8 @@ pub struct PlaceVisitDuration {
 #[allow(non_snake_case)]
 impl TimeLineObjects {
     pub fn saveToDb(&self, conn: &Connection) -> Result<(), rusqlite::Error> {
-        let _ = self.timelineObjects.iter().map(|timeline| {
-            if let Some(place_visit) = &timeline.placeVisit {
+        for elem in self.timelineObjects.iter() {
+            if let Some(place_visit) = &elem.placeVisit {
                 let lat = place_visit.location.latitudeE7.unwrap_or(-99);
                 let lng = place_visit.location.longitudeE7.unwrap_or(-99);
 
@@ -56,30 +56,30 @@ impl TimeLineObjects {
                         values(?1, $2, $3, $4, $5/10000000.0, $6/10000000.0,'place_visit')",
                         params![
                             place_visit
-                                .location
-                                .name
-                                .as_ref()
-                                .unwrap_or(&"".to_string()),
-                            place_visit
-                                .duration
-                                .startTimestampMs
-                                .parse::<i64>()
-                                .unwrap_or(0),
-                            place_visit.location.locationConfidence,
-                            place_visit
-                                .location
-                                .address
-                                .as_ref()
-                                .unwrap_or(&"".to_string()),
-                            lat,
-                            lng
+                            .location
+                            .name
+                            .as_ref()
+                            .unwrap_or(&"".to_string()),
+                        place_visit
+                            .duration
+                            .startTimestampMs
+                            .parse::<i64>()
+                            .unwrap_or(0),
+                        place_visit.location.locationConfidence,
+                        place_visit
+                            .location
+                            .address
+                            .as_ref()
+                            .unwrap_or(&"".to_string()),
+                        lat,
+                        lng
                         ],
                     )
                     .map_err(|err| println!("{:?}", err))
                     .ok();
                 }
             }
-        });
+        }
 
         Ok(())
     }

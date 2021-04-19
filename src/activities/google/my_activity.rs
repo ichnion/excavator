@@ -41,7 +41,7 @@ pub struct SubTitle {
 #[rustfmt::skip]
 #[allow(non_snake_case)]
 impl MyActivity {
-    pub fn saveToDb(&self, conn: &Connection) -> Result<(), rusqlite::Error> {
+    pub fn saveToDb(&self,conn: &Connection) -> Result<(), rusqlite::Error> {
 
         let my_uuid = Uuid::new_v4();
         let title_url = self.titleUrl.as_ref(); //clone();
@@ -53,7 +53,7 @@ impl MyActivity {
                 title_url,
                 time
             )
-            VALUES (?1, ?2, ?3, ?4, ?5)",
+            values (?1, ?2, ?3, ?4, ?5)",
             params![
                 &my_uuid.to_string(),
                 &self.header,

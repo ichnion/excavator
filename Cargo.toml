@@ -1,6 +1,6 @@
 [package]
 name = "excavator"
-version = "0.1.2"
+version = "0.2.0"
 authors = ["chansuke <chansuke@georepublic.de>", "Mario Basa <mario.basa@georepublic.de>"]
 description = "Visualize your digital footprint"
 edition = "2018"

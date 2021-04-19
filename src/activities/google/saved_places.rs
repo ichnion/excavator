@@ -54,10 +54,10 @@ pub struct SavedPlace {
 
 #[allow(non_snake_case)]
 impl SavedPlace {
-    pub fn saveToDb(&self, conn: &Connection) -> Result<(), rusqlite::Error> {
+    pub fn saveToDb(&self,conn: &Connection) -> Result<(), rusqlite::Error> {
         let my_uuid = Uuid::new_v4();
 
-        let _ = self.features.iter().map(|feature| {
+        for elem in self.features.iter() {
             conn.execute(
                 "INSERT INTO google_my_activity (
                         uuid,
@@ -68,19 +68,18 @@ impl SavedPlace {
                         lng
                     )
                     VALUES (?1, ?2, ?3, ?4, ?5)",
-                params![
-                    &my_uuid.to_string(),
-                    &feature.properties.location.business_name,
-                    &feature.properties.location.address,
-                    &feature.properties.google_maps_url,
-                    &feature.properties.location.geo_coordinate.latitude,
-                    &feature.properties.location.geo_coordinate.longitude,
-                ],
-            )
-            .ok();
-        });
+                    params![
+                        &my_uuid.to_string(),
+                        &elem.properties.location.business_name,
+                        &elem.properties.location.address,
+                        &elem.properties.google_maps_url,
+                        &elem.properties.location.geo_coordinate.latitude,
+                        &elem.properties.location.geo_coordinate.longitude,
+                    ]
+                ).ok();
+            }
 
-        Ok(())
+            Ok(())
     }
 }
 

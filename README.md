@@ -30,6 +30,11 @@ $ brew tap ichnion/tap
 $ brew install excavator
 ```
 
+### Update to the latest version
+```sh
+$ brew upgrade ichnion/tap/excavator
+```
+
 ## How to use Excavator
 Excavator read and store your exported digital data.
 Currently, we support **part of** Google Takeout and Facebook data.

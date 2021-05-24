@@ -11,7 +11,7 @@ use excavator::activities::{
     MyActivity, PrimaryLocation,
 };
 use excavator::db::schema;
-
+use excavator::activities::google::{google_fit_activity};
 #[derive(Debug, StructOpt)]
 #[structopt(
     name = "excavator",
@@ -104,6 +104,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             println!("( {} records )", result.timelineObjects.len());
             result.saveToDb(&conn)?;
+
+        } else if d_name.contains("All Sessions") && f_name.ends_with(".json") {
+                println!("processing {}", d_name);
+
+                let rawdata = std::fs::read_to_string(&entry.path())?;
+
+                let result: google_fit_activity::Fit =
+                    serde_json::from_str(&rawdata)?;
+                println!("( 1 record )");
+                result.saveToDb(&conn)?;
+
         // Facebook activities
         } else if f_name.starts_with("device_location.json") {
             println!("processing {}", d_name);
@@ -140,8 +151,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let response = result.saveToDb(&conn)?;
             println!("{:?}", response);
+            }
         }
-    }
-
     Ok(())
 }

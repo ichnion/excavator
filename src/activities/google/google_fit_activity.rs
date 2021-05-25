@@ -14,7 +14,6 @@ pub struct Fit {
 #[allow(non_snake_case)]
 impl Fit {
     pub fn saveToDb(&self, conn: &Connection) -> Result<(), rusqlite::Error> {
-        //for elem in self.fit.iter() {
             let my_uuid = Uuid::new_v4();
             let duration = &self.duration;
             let startTime = &self.startTime;
@@ -35,8 +34,6 @@ impl Fit {
             )
             .map_err(|err| println!("{:?}", err))
             .ok();
-       // }
-
         Ok(())
     }
 }

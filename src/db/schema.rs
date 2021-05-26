@@ -176,7 +176,7 @@ pub fn create_tables(conn: &Connection) {
     .map_err(|err| println!("{:?}", err))
     .ok();
 
-    // google_fit_activity
+   // google_fit_activity
     conn.execute(
         "CREATE TABLE IF NOT EXISTS google_fit_activity (
             uuid              TEXT NOT NULL PRIMARY KEY,

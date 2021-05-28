@@ -14,7 +14,7 @@ pub struct PrimaryPublicLocationObjects {
 #[allow(non_snake_case)]
 #[derive(Deserialize, Debug)]
 pub struct PrimaryPublicLocation {
-  pub primary_public_location: PrimaryPublicLocationObjects
+  pub primary_public_location_v2: PrimaryPublicLocationObjects
 }
 
 #[allow(non_snake_case)]
@@ -31,9 +31,9 @@ impl PrimaryPublicLocation {
         VALUES (?1, ?2, ?3, ?4)",
             params![
                 &my_uuid.to_string(),
-                &self.primary_public_location.city,
-                &self.primary_public_location.region,
-                &self.primary_public_location.country
+                &self.primary_public_location_v2.city,
+                &self.primary_public_location_v2.region,
+                &self.primary_public_location_v2.country
             ],
         )
         .map_err(|err| println!("{:?}", err))
@@ -57,10 +57,11 @@ mod tests {
             country: "Japan".to_string(),
         };
         let primary_public_location = PrimaryPublicLocation {
-            primary_public_location: test_location,
+            primary_public_location_v2: test_location,
         };
         let result = PrimaryPublicLocation::saveToDb(&primary_public_location, &conn);
         assert!(result == Ok(()));
         Ok(())
     }
 }
+

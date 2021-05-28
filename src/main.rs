@@ -5,13 +5,13 @@ use std::time::Duration;
 use structopt::StructOpt;
 use walkdir::WalkDir;
 
+use excavator::activities::google::google_fit_activity;
 use excavator::activities::google::{location_history, saved_places, semantic_location_history};
 use excavator::activities::{
     facebook::{device_location, primary_public_location},
     MyActivity, PrimaryLocation,
 };
 use excavator::db::schema;
-
 #[derive(Debug, StructOpt)]
 #[structopt(
     name = "excavator",
@@ -104,6 +104,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             println!("( {} records )", result.timelineObjects.len());
             result.saveToDb(&conn)?;
+        } else if d_name.contains("All Sessions") && f_name.ends_with(".json") {
+            println!("processing {}", d_name);
+
+            let rawdata = std::fs::read_to_string(&entry.path())?;
+
+            let result: google_fit_activity::Fit = serde_json::from_str(&rawdata)?;
+            println!("( 1 record )");
+            result.saveToDb(&conn)?;
+
         // Facebook activities
         } else if f_name.starts_with("device_location.json") {
             println!("processing {}", d_name);
@@ -142,6 +151,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("{:?}", response);
         }
     }
-
     Ok(())
 }
+

@@ -167,7 +167,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let result: facebook_location_history::LocationHistory =
                 serde_json::from_str(&rawdata)?;
-            //println!("( 1 record )");
+            println! ("({} records)", result.location_history_v2.len());
             let response = result.saveToDb(&conn)?;
             println!("{:?}", response);
         }

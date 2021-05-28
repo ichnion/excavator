@@ -5,6 +5,8 @@ use std::time::Duration;
 use structopt::StructOpt;
 use walkdir::WalkDir;
 
+use excavator::activities::facebook::facebook_last_location;
+use excavator::activities::facebook::facebook_location_history;
 use excavator::activities::google::google_fit_activity;
 use excavator::activities::google::{location_history, saved_places, semantic_location_history};
 use excavator::activities::{
@@ -123,7 +125,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let response = result.saveToDb(&conn)?;
 
-            println!("( {} records )", result.phone_number_location.len());
+            println!("( {} records )", 1);
             println!("{:?}", response);
         } else if f_name.starts_with("primary_location.json") {
             println!("processing {}", d_name);
@@ -136,7 +138,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             println!(
                 "( {} records )",
-                result.primary_location.city_region_pairs.len()
+                result.primary_location_v2.city_region_pairs.len()
             );
             println!("{:?}", response);
         } else if f_name.starts_with("primary_public_location.json") {
@@ -149,8 +151,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let response = result.saveToDb(&conn)?;
             println!("{:?}", response);
+        } else if f_name.starts_with("last_location.json") {
+            println!("processing {}", d_name);
+
+            let rawdata = std::fs::read_to_string(&entry.path())?;
+
+            let result: facebook_last_location::LastLocation = serde_json::from_str(&rawdata)?;
+            println!("( 1 record )");
+            let response = result.saveToDb(&conn)?;
+            println!("{:?}", response);
+        } else if f_name.starts_with("location_history.json") {
+            println!("processing {}", d_name);
+
+            let rawdata = std::fs::read_to_string(&entry.path())?;
+
+            let result: facebook_location_history::LocationHistory =
+                serde_json::from_str(&rawdata)?;
+            //println!("( 1 record )");
+            let response = result.saveToDb(&conn)?;
+            println!("{:?}", response);
         }
     }
     Ok(())
 }
-

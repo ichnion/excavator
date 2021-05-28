@@ -142,7 +142,7 @@ pub fn create_tables(conn: &Connection) {
     // facebook_device_location
     conn.execute(
         "CREATE TABLE IF NOT EXISTS facebook_device_location (
-            id               INTEGER PRIMARY KEY,
+            uuid             TEXT PRIMARY KEY,
             spn              TEXT,
             country_code     TEXT
         )",
@@ -154,7 +154,7 @@ pub fn create_tables(conn: &Connection) {
     // facebook_primary_location
     conn.execute(
         "CREATE TABLE IF NOT EXISTS facebook_primary_location (
-            id                INTEGER PRIMARY KEY,
+            uuid              TEXT PRIMARY KEY,
             city_region_pairs TEXT,
             zipcode           TEXT
         )",
@@ -166,7 +166,7 @@ pub fn create_tables(conn: &Connection) {
     // facebook_primary_public_location
     conn.execute(
         "CREATE TABLE IF NOT EXISTS facebook_primary_public_location (
-            id                INTEGER PRIMARY KEY,
+            uuid              TEXT PRIMARY KEY,
             city              TEXT,
             region            TEXT,
             country           TEXT
@@ -176,7 +176,33 @@ pub fn create_tables(conn: &Connection) {
     .map_err(|err| println!("{:?}", err))
     .ok();
 
-   // google_fit_activity
+    // facebook_last_location
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS facebook_last_location (
+            time                  TEXT PRIMARY KEY,
+            latitude              TEXT,
+            longitude             TEXT
+        )",
+        NO_PARAMS,
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
+
+    // facebook location_history
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS facebook_location_history (
+            time                  TEXT PRIMARY KEY,
+            name                  TEXT,
+            latitude              TEXT,
+            longitude             TEXT
+
+        )",
+        NO_PARAMS,
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
+
+    // google_fit_activity
     conn.execute(
         "CREATE TABLE IF NOT EXISTS google_fit_activity (
             uuid              TEXT NOT NULL PRIMARY KEY,

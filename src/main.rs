@@ -136,10 +136,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let response = result.saveToDb(&conn)?;
 
-            println!(
-                "( {} records )",
-                result.primary_location_v2.city_region_pairs.len()
-            );
+            println!("( 1 record )");
             println!("{:?}", response);
         } else if f_name.starts_with("primary_public_location.json") {
             println!("processing {}", d_name);
@@ -167,7 +164,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let result: facebook_location_history::LocationHistory =
                 serde_json::from_str(&rawdata)?;
-            println! ("({} records)", result.location_history_v2.len());
+            //println! ("({} records)", result.location_history_v2.len());
             let response = result.saveToDb(&conn)?;
             println!("{:?}", response);
         }

@@ -6,7 +6,7 @@ use uuid::Uuid;
 #[allow(non_snake_case)]
 #[derive(Deserialize, Debug)]
 pub struct PrimaryLocation {
-  pub primary_location: CityAndRegionAndZipcode
+  pub primary_location_v2: CityAndRegionAndZipcode
 }
 
 #[rustfmt::skip]
@@ -22,21 +22,18 @@ pub struct CityAndRegionAndZipcode {
 impl PrimaryLocation {
     pub fn saveToDb(&self, conn: &Connection) -> Result<(), rusqlite::Error> {
         let my_uuid = Uuid::new_v4();
-
-        let _ = self.primary_location.city_region_pairs.iter().map(|x| {
-            conn.execute(
-                "INSERT INTO facebook_primary_location (
-                    uuid,
-                    city,
-                    region,
-                )
-                VALUES (?1, ?2, ?3)",
-                params![my_uuid.to_string(), &x[0], &x[1]],
-            )
-            .map_err(|err| println!("{:?}", err))
-            .ok()
-        });
-
+        conn.execute(
+            "INSERT into facebook_primary_location
+                (uuid, city_region_pairs, zipcode)
+                values(?1, $2, $3)",
+            params![
+                &my_uuid.to_string(),
+                &self.primary_location_v2.city_region_pairs[0][0],
+                &self.primary_location_v2.zipcode[0],
+            ],
+        )
+        .map_err(|err| println!("{:?}", err))
+        .ok();
         Ok(())
     }
 }
@@ -55,10 +52,11 @@ mod tests {
             zipcode: vec![zip_code],
         };
         let primary_location = PrimaryLocation {
-            primary_location: city_region_zipcode,
+            primary_location_v2: city_region_zipcode,
         };
         let result = PrimaryLocation::saveToDb(&primary_location, &conn);
         assert_eq!(result, Ok(()));
         Ok(())
     }
 }
+

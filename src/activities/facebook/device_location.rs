@@ -13,27 +13,23 @@ pub struct CellPhoneCarrier {
 #[allow(non_snake_case)]
 #[derive(Deserialize, Debug)]
 pub struct DeviceLocation {
-  pub phone_number_location: Vec<CellPhoneCarrier>
+  pub phone_number_location_v2: Vec<CellPhoneCarrier>
 }
 
 #[allow(non_snake_case)]
 impl DeviceLocation {
     pub fn saveToDb(&self, conn: &Connection) -> Result<(), rusqlite::Error> {
-        let my_uuid = Uuid::new_v4();
-
-        let _ = self.phone_number_location.iter().map(|x| {
+        for elem in self.phone_number_location_v2.iter() {
+            let my_uuid = Uuid::new_v4();
             conn.execute(
-                "INSERT INTO facebook_device_location (
-                    uuid,
-                    spn,
-                    country_code
-                )
-                VALUES (?1, ?2, ?3)",
-                params![my_uuid.to_string(), &x.spn, &x.country_code],
+                "INSERT into facebook_device_location
+                (uuid, spn, country_code)
+                values(?1, $2, $3)",
+                params![&my_uuid.to_string(), elem.spn, elem.country_code,],
             )
             .map_err(|err| println!("{:?}", err))
-            .ok()
-        });
+            .ok();
+        }
 
         Ok(())
     }
@@ -52,7 +48,7 @@ mod tests {
             country_code: "440".to_string(),
         };
         let device_location = DeviceLocation {
-            phone_number_location: vec![cell_phone_carrier],
+            phone_number_location_v2: vec![cell_phone_carrier],
         };
         let result = DeviceLocation::saveToDb(&device_location, &conn);
         assert_eq!(result, Ok(()));

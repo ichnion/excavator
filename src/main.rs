@@ -125,7 +125,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let response = result.saveToDb(&conn)?;
 
-            println!("( {} records )", 1);
+             println!("( 1 record )");
             println!("{:?}", response);
         } else if f_name.starts_with("primary_location.json") {
             println!("processing {}", d_name);

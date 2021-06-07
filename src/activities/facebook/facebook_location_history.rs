@@ -10,7 +10,6 @@ pub struct LocationHistory {
     pub location_history: Option<Vec<FbLocationHistory>>
 }
 
-#[rustfmt::skip]
 #[derive(Deserialize, Debug)]
 pub struct FbLocationHistory {
     pub name: String,

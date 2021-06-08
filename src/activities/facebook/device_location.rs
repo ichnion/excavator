@@ -20,33 +20,41 @@ pub struct DeviceLocation {
 #[allow(non_snake_case)]
 impl DeviceLocation {
     pub fn saveToDb(&self, conn: &Connection) -> Result<(), rusqlite::Error> {
-        match &self.phone_number_location_v2 {
-            None => None,
-            Some(x) => Some(for elem in x.iter() {
-                let my_uuid = Uuid::new_v4();
+        match &self.location_history_v2 {
+            Some(x) => x.iter().for_each(|elem| {
                 conn.execute(
-                    "INSERT into facebook_device_location
-                                (uuid, spn, country_code)
-                                VALUES (?1, $2, $3)",
-                    params![&my_uuid.to_string(), elem.spn, elem.country_code,],
+                    "INSERT into facebook_location_history
+                    (time, name, latitude, longitude)
+                    values(?1, $2, $3, $4)",
+                    params![
+                        elem.creation_timestamp.to_string(),
+                        elem.name,
+                        elem.coordinate.latitude.to_string(),
+                        elem.coordinate.longitude.to_string()
+                    ],
                 )
                 .map_err(|err| println!("{:?}", err))
                 .ok();
             }),
+            None => println!("Old version of Facebook's data"),
         };
-        match &self.phone_number_location {
-            None => None,
-            Some(x) => Some(for elem in x.iter() {
-                let my_uuid = Uuid::new_v4();
+        match &self.location_history {
+            Some(x) => x.iter().for_each(|elem| {
                 conn.execute(
-                    "INSERT into facebook_device_location
-                                (uuid, spn, country_code)
-                                values(?1, $2, $3)",
-                    params![&my_uuid.to_string(), elem.spn, elem.country_code,],
+                    "INSERT into facebook_location_history
+                    (time, name, latitude, longitude)
+                    values(?1, $2, $3, $4)",
+                    params![
+                        elem.creation_timestamp.to_string(),
+                        elem.name,
+                        elem.coordinate.latitude.to_string(),
+                        elem.coordinate.longitude.to_string()
+                    ],
                 )
                 .map_err(|err| println!("{:?}", err))
                 .ok();
             }),
+            None => println!("Current version of Facebook's data"),
         };
         Ok(())
     }

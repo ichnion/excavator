@@ -28,9 +28,8 @@ pub struct Coordinate {
 #[allow(non_snake_case)]
 impl LocationHistory {
     pub fn saveToDb(&self,conn: &Connection) -> Result<(), rusqlite::Error> {
-        match &self.location_history_v2 {
-            None => None,
-            Some(x) => Some (for elem in x.iter() {
+          match &self.location_history_v2 {
+            Some(x) => x.iter().for_each(|elem| {
                 conn.execute(
                     "INSERT into facebook_location_history
                     (time, name, latitude, longitude)
@@ -44,11 +43,11 @@ impl LocationHistory {
                 )
                 .map_err(|err| println!("{:?}", err))
                 .ok();
-            })
+            }),
+            None => println!("Old version of Facebook's data"),
         };
         match &self.location_history {
-            None => None,
-            Some(x) => Some (for elem in x.iter() {
+            Some(x) => x.iter().for_each(|elem| {
                 conn.execute(
                     "INSERT into facebook_location_history
                     (time, name, latitude, longitude)
@@ -62,13 +61,12 @@ impl LocationHistory {
                 )
                 .map_err(|err| println!("{:?}", err))
                 .ok();
-            })
+            }),
+            None => println!("Current version of Facebook's data"),
         };
-
         Ok(())
     }
 }
-
 #[cfg(test)]
 mod tests {
     use super::*;

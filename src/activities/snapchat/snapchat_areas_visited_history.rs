@@ -57,16 +57,16 @@ mod tests {
     #[test]
     fn test_snapchat_areas_visited_history() -> Result<(), Box<dyn std::error::Error>> {
         let conn = Connection::open("ichnion.db")?;
-        let SmallerTest = SmallerStructure {
+        let smaller_test = SmallerStructure {
             Time: "2021/02/12 11:51:31 UTC".to_string(),
             City: "Paris".to_string(),
             Region: "Ile - De - France".to_string(),
             Postal: "75000".to_string(),
         };
-        let GeneralTest = GeneralStructure {
-            areas: vec![SmallerTest],
+        let general_test = GeneralStructure {
+            areas: vec![smaller_test],
         };
-        let result = GeneralStructure::saveToDb(&GeneralTest, &conn);
+        let result = GeneralStructure::saveToDb(&general_test, &conn);
 
         assert_eq!(result, Ok(()));
 

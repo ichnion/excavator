@@ -176,7 +176,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let result: instagram_liked_posts::LikedPosts = serde_json::from_str(&rawdata)?;
             println!("({} records)", &result.likes_media_likes.len());
-            total_records=total_records+&result.likes_media_likes.len();
             let response = result.saveToDb(&conn)?;
             println!("{:?}", response);
         }

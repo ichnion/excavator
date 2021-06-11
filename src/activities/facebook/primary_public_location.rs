@@ -14,31 +14,48 @@ pub struct PrimaryPublicLocationObjects {
 #[allow(non_snake_case)]
 #[derive(Deserialize, Debug)]
 pub struct PrimaryPublicLocation {
-  pub primary_public_location_v2: PrimaryPublicLocationObjects
+  pub primary_public_location_v2: Option<PrimaryPublicLocationObjects>,
+  pub primary_public_location: Option<PrimaryPublicLocationObjects>
 }
 
 #[allow(non_snake_case)]
 impl PrimaryPublicLocation {
     pub fn saveToDb(&self, conn: &Connection) -> Result<(), rusqlite::Error> {
         let my_uuid = Uuid::new_v4();
-        conn.execute(
-            "INSERT INTO facebook_primary_public_location (
-            uuid,
-            city,
-            region,
-            country
-        )
-        VALUES (?1, ?2, ?3, ?4)",
-            params![
-                &my_uuid.to_string(),
-                &self.primary_public_location_v2.city,
-                &self.primary_public_location_v2.region,
-                &self.primary_public_location_v2.country
-            ],
-        )
-        .map_err(|err| println!("{:?}", err))
-        .ok();
-
+        match &self.primary_public_location_v2 {
+            None => None,
+            Some(x) => Some(
+                conn.execute(
+                    "INSERT INTO facebook_primary_public_location (
+                uuid,
+                city,
+                region,
+                country
+            )
+            VALUES (?1, ?2, ?3, ?4)",
+                    params![&my_uuid.to_string(), &x.city, &x.region, &x.country],
+                )
+                .map_err(|err| println!("{:?}", err))
+                .ok(),
+            ),
+        };
+        match &self.primary_public_location {
+            None => None,
+            Some(x) => Some(
+                conn.execute(
+                    "INSERT INTO facebook_primary_public_location (
+                uuid,
+                city,
+                region,
+                country
+            )
+            VALUES (?1, ?2, ?3, ?4)",
+                    params![&my_uuid.to_string(), &x.city, &x.region, &x.country],
+                )
+                .map_err(|err| println!("{:?}", err))
+                .ok(),
+            ),
+        };
         Ok(())
     }
 }
@@ -49,6 +66,22 @@ mod tests {
     use rusqlite::Connection;
 
     #[test]
+    fn test_primary_public_location_v2() -> Result<(), Box<dyn std::error::Error>> {
+        let conn = Connection::open("ichnion.db")?;
+        let test_location = PrimaryPublicLocationObjects {
+            city: "Tokyo".to_string(),
+            region: "Tokyo".to_string(),
+            country: "Japan".to_string(),
+        };
+        let primary_public_location = PrimaryPublicLocation {
+            primary_public_location_v2: Some(test_location),
+            primary_public_location: None,
+        };
+        let result = PrimaryPublicLocation::saveToDb(&primary_public_location, &conn);
+        assert!(result == Ok(()));
+        Ok(())
+    }
+    #[test]
     fn test_primary_public_location() -> Result<(), Box<dyn std::error::Error>> {
         let conn = Connection::open("ichnion.db")?;
         let test_location = PrimaryPublicLocationObjects {
@@ -57,11 +90,11 @@ mod tests {
             country: "Japan".to_string(),
         };
         let primary_public_location = PrimaryPublicLocation {
-            primary_public_location_v2: test_location,
+            primary_public_location_v2: None,
+            primary_public_location: Some(test_location),
         };
         let result = PrimaryPublicLocation::saveToDb(&primary_public_location, &conn);
         assert!(result == Ok(()));
         Ok(())
     }
 }
-

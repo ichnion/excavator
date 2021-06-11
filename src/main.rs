@@ -9,6 +9,7 @@ use excavator::activities::facebook::facebook_last_location;
 use excavator::activities::facebook::facebook_location_history;
 use excavator::activities::google::google_fit_activity;
 use excavator::activities::google::{location_history, saved_places, semantic_location_history};
+use excavator::activities::instagram::instagram_liked_posts;
 use excavator::activities::{
     facebook::{device_location, primary_public_location},
     MyActivity, PrimaryLocation,

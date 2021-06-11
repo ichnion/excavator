@@ -215,4 +215,17 @@ pub fn create_tables(conn: &Connection) {
     )
     .map_err(|err| println!("{:?}", err))
     .ok();
+    
+    // instagram_liked_posts
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS instagram_liked_posts (
+            uuid              TEXT NOT NULL PRIMARY KEY,
+            timestamp         TEXT,
+            publisher         TEXT,
+            link              TEXT
+        )",
+        NO_PARAMS,
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
 }

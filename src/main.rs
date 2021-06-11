@@ -167,6 +167,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let response = result.saveToDb(&conn)?;
             println! ("({} records)", &result.location_history_v2.unwrap_or_default().len());
             println!("{:?}", response);
+        // Instagram
+        } else if f_name.starts_with("liked_posts.json") {
+            println!("processing {}", d_name);
+
+            let rawdata = std::fs::read_to_string(&entry.path())?;
+
+            let result: instagram_liked_posts::LikedPosts = serde_json::from_str(&rawdata)?;
+            println!("({} records)", &result.likes_media_likes.len());
+            total_records=total_records+&result.likes_media_likes.len();
+            let response = result.saveToDb(&conn)?;
+            println!("{:?}", response);
         }
     }
     Ok(())

@@ -56,16 +56,16 @@ mod tests {
     #[test]
     fn test_instagram_liked_posts() -> Result<(), Box<dyn std::error::Error>> {
         let conn = Connection::open("ichnion.db")?;
-        let LinkTest = Link {
+        let link_test = Link {
             href: "Test_href".to_string(),
             timestamp: 10,
         };
-        let LikesTest = Likes {
+        let likes_test = Likes {
             title: "Test".to_string(),
-            string_list_data: vec![LinkTest],
+            string_list_data: vec![link_test],
         };
         let like = LikedPosts {
-            likes_media_likes: vec![LikesTest],
+            likes_media_likes: vec![likes_test],
         };
         let result = LikedPosts::saveToDb(&like, &conn);
 

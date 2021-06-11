@@ -177,7 +177,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let result: snapchat_areas_visited_history::GeneralStructure =
                 serde_json::from_str(&rawdata)?;
             println!("({} records)", &result.areas.len());
-            total_records=total_records+&result.areas.len();
             let response = result.saveToDb(&conn)?;
             println!("{:?}", response);
         }

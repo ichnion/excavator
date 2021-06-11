@@ -215,4 +215,22 @@ pub fn create_tables(conn: &Connection) {
     )
     .map_err(|err| println!("{:?}", err))
     .ok();
+    
+    // uber_eats_trips
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS uber_eats_trips (
+            uuid                      TEXT NOT NULL PRIMARY KEY,
+            Begin_Trip_Time           TEXT,
+            Begin_Trip_Lat            TEXT,
+            Begin_Trip_Long           TEXT,
+            Begin_Trip_Address         TEXT,
+            Dropoff_Time              TEXT,
+            Dropoff_Lat               TEXT,
+            Dropoff_Lng               TEXT,
+            Dropoff_Address            TEXT
+        )",
+        NO_PARAMS,
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
 }

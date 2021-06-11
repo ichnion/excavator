@@ -5,6 +5,10 @@ use std::time::Duration;
 use structopt::StructOpt;
 use walkdir::WalkDir;
 
+extern crate csv;
+use excavator::activities::uber_eats::uber_trips;
+use csv::Reader;
+
 use excavator::activities::facebook::facebook_last_location;
 use excavator::activities::facebook::facebook_location_history;
 use excavator::activities::google::google_fit_activity;
@@ -167,6 +171,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let response = result.saveToDb(&conn)?;
             println! ("({} records)", &result.location_history_v2.unwrap_or_default().len());
             println!("{:?}", response);
+        // Uber Eats
+        } else if f_name.starts_with("trips_data.csv") {
+            println!("processing {}", d_name);
+            let mut rdr = Reader::from_path(entry.path())?;
+            let mut cp=0;
+            for elem in rdr.deserialize() {
+                let record : uber_trips::GeneralStructure = elem?;
+                record.saveToDb(&conn)?;
+                cp=cp+1;
+            }
+            if cp!=0 {
+                println!("( {} records )",cp);
+            }
         }
     }
     Ok(())

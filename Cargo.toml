@@ -19,6 +19,7 @@ walkdir = "2"
 uuid = { version = "0.8", features = ["serde", "v4"] }
 #rusqlite = "0.24.2"
 indicatif = {version = "0.15.0", features = ["rayon"]}
+csv = "1"
 
 [dependencies.rusqlite]
 version = "0.24.2"

@@ -73,7 +73,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             for elem in result.iter() {
                 elem.saveToDb(&conn)?;
             }
-            total_records= total_records + result.len();
+            total_records += result.len();
             println!("( {} records )", result.len());
         } else if f_name.starts_with("Location History.json") {
             println!("processing {}", d_name);
@@ -83,7 +83,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let result: location_history::LocationHistory = serde_json::from_str(&rawdata)?;
 
             result.saveToDb(&conn)?;
-            total_records= total_records + result.locations.len();
+            total_records += result.locations.len();
             println!("( {} records )", result.locations.len());
         } else if f_name.starts_with(
             "
@@ -94,7 +94,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let rawdata = std::fs::read_to_string(&entry.path())?;
 
             let result: saved_places::SavedPlace = serde_json::from_str(&rawdata)?;
-            total_records= total_records + result.features.len();
+            total_records += result.features.len();
             result.saveToDb(&conn)?;
             println!("( {} records )", result.features.len());
         } else if d_name.contains("Semantic Location History") && f_name.ends_with(".json") {
@@ -104,14 +104,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let result: semantic_location_history::TimeLineObjects =
                 serde_json::from_str(&rawdata)?;
-            total_records= total_records+result.timelineObjects.len();
+            total_records += result.timelineObjects.len();
             println!("( {} records )", result.timelineObjects.len());
             result.saveToDb(&conn)?;
         } else if d_name.contains("All Sessions") && f_name.ends_with(".json") {
             println!("processing {}", d_name);
 
             let rawdata = std::fs::read_to_string(&entry.path())?;
-            total_records= total_records+1;
+            total_records += 1;
             let result: google_fit_activity::Fit = serde_json::from_str(&rawdata)?;
             println!("( 1 record )");
             result.saveToDb(&conn)?;
@@ -121,7 +121,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("processing {}", d_name);
 
             let rawdata = std::fs::read_to_string(&entry.path())?;
-            total_records = total_records+1;
+            total_records += 1;
             let result: device_location::DeviceLocation = serde_json::from_str(&rawdata)?;
             println!("( 1 record )");
             let response = result.saveToDb(&conn)?;
@@ -130,7 +130,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("processing {}", d_name);
 
             let rawdata = std::fs::read_to_string(&entry.path())?;
-            total_records= total_records+1;
+            total_records += 1;
             let result: PrimaryLocation = serde_json::from_str(&rawdata)?;
             println!("( 1 record )");
             let response = result.saveToDb(&conn)?;
@@ -139,7 +139,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("processing {}", d_name);
 
             let rawdata = std::fs::read_to_string(&entry.path())?;
-            total_records= total_records+1;
+            total_records += 1;
             let result: primary_public_location::PrimaryPublicLocation =
                 serde_json::from_str(&rawdata)?;
             println!("( 1 record )");
@@ -149,7 +149,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("processing {}", d_name);
 
             let rawdata = std::fs::read_to_string(&entry.path())?;
-            total_records= total_records+1;
+            total_records += 1;
             let result: facebook_last_location::LastLocation = serde_json::from_str(&rawdata)?;
             println!("( 1 record )");
             let response = result.saveToDb(&conn)?;
@@ -161,12 +161,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let result: facebook_location_history::LocationHistory =
                 serde_json::from_str(&rawdata)?;
-            let total_records2 = total_records;
             let response = result.saveToDb(&conn)?;
             total_records= total_records + result.location_history.unwrap_or_default().len() + result.location_history_v2.unwrap_or_default().len();
             println!(
                 "({} records)",
-                total_records-total_records2
+                result.location_history.unwrap_or_default().len() + result.location_history_v2.unwrap_or_default().len()
             );
             println!("{:?}", response);
         }

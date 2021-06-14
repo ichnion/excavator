@@ -163,7 +163,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 serde_json::from_str(&rawdata)?;
             let response = result.saveToDb(&conn)?;
             let total_records2 = total_records;
-            let response = result.saveToDb(&conn)?;
             total_records= total_records + result.location_history.unwrap_or_default().len() + result.location_history_v2.unwrap_or_default().len();
             println!(
                 "({} records)",

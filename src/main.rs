@@ -1,7 +1,7 @@
 use indicatif::{ProgressBar, ProgressStyle};
 use rusqlite::{Connection, Result};
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use structopt::StructOpt;
 use walkdir::WalkDir;
 
@@ -31,12 +31,12 @@ struct Opt {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut total_records : usize =0;
     let args = Opt::from_args();
-
+    let start = Instant::now();
     let conn = Connection::open(&args.dbfile)?;
     schema::create_tables(&conn);
     let directory_name = &args.directory_name;
-
     let total_count = WalkDir::new(directory_name).into_iter().count();
     let pb = ProgressBar::new(total_count as u64);
     pb.set_style(
@@ -60,7 +60,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     {
         let f_name = entry.file_name().to_string_lossy();
         let d_name = entry.path().to_string_lossy();
-
         if f_name.starts_with("MyActivity.json")
             || f_name.starts_with("search-history.json")
             || f_name.starts_with("watch-history.json")
@@ -74,6 +73,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             for elem in result.iter() {
                 elem.saveToDb(&conn)?;
             }
+            total_records += result.len();
             println!("( {} records )", result.len());
         } else if f_name.starts_with("Location History.json") {
             println!("processing {}", d_name);
@@ -83,7 +83,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let result: location_history::LocationHistory = serde_json::from_str(&rawdata)?;
 
             result.saveToDb(&conn)?;
-
+            total_records += result.locations.len();
             println!("( {} records )", result.locations.len());
         } else if f_name.starts_with(
             "
@@ -94,8 +94,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let rawdata = std::fs::read_to_string(&entry.path())?;
 
             let result: saved_places::SavedPlace = serde_json::from_str(&rawdata)?;
-
+            total_records += result.features.len();
             result.saveToDb(&conn)?;
+            println!("( {} records )", result.features.len());
         } else if d_name.contains("Semantic Location History") && f_name.ends_with(".json") {
             println!("processing {}", d_name);
 
@@ -103,14 +104,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let result: semantic_location_history::TimeLineObjects =
                 serde_json::from_str(&rawdata)?;
-
+            total_records += result.timelineObjects.len();
             println!("( {} records )", result.timelineObjects.len());
             result.saveToDb(&conn)?;
         } else if d_name.contains("All Sessions") && f_name.ends_with(".json") {
             println!("processing {}", d_name);
 
             let rawdata = std::fs::read_to_string(&entry.path())?;
-
+            total_records += 1;
             let result: google_fit_activity::Fit = serde_json::from_str(&rawdata)?;
             println!("( 1 record )");
             result.saveToDb(&conn)?;
@@ -120,39 +121,35 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("processing {}", d_name);
 
             let rawdata = std::fs::read_to_string(&entry.path())?;
-
+            total_records += 1;
             let result: device_location::DeviceLocation = serde_json::from_str(&rawdata)?;
-
+            println!("( 1 record )");
             let response = result.saveToDb(&conn)?;
-
-             println!("( 1 record )");
             println!("{:?}", response);
         } else if f_name.starts_with("primary_location.json") {
             println!("processing {}", d_name);
 
             let rawdata = std::fs::read_to_string(&entry.path())?;
-
+            total_records += 1;
             let result: PrimaryLocation = serde_json::from_str(&rawdata)?;
-
-            let response = result.saveToDb(&conn)?;
-
             println!("( 1 record )");
+            let response = result.saveToDb(&conn)?;
             println!("{:?}", response);
         } else if f_name.starts_with("primary_public_location.json") {
             println!("processing {}", d_name);
 
             let rawdata = std::fs::read_to_string(&entry.path())?;
-
+            total_records += 1;
             let result: primary_public_location::PrimaryPublicLocation =
                 serde_json::from_str(&rawdata)?;
-
+            println!("( 1 record )");
             let response = result.saveToDb(&conn)?;
             println!("{:?}", response);
         } else if f_name.starts_with("last_location.json") {
             println!("processing {}", d_name);
 
             let rawdata = std::fs::read_to_string(&entry.path())?;
-
+            total_records += 1;
             let result: facebook_last_location::LastLocation = serde_json::from_str(&rawdata)?;
             println!("( 1 record )");
             let response = result.saveToDb(&conn)?;
@@ -165,9 +162,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let result: facebook_location_history::LocationHistory =
                 serde_json::from_str(&rawdata)?;
             let response = result.saveToDb(&conn)?;
-            println! ("({} records)", &result.location_history_v2.unwrap_or_default().len());
+            let location_history_v2_len = result.location_history_v2.unwrap_or_default().len();
+            let location_history_len = result.location_history.unwrap_or_default().len();
+            let total_len = location_history_v2_len + location_history_len;
+            total_records+= total_len;
+            println!("{} records: ", total_len as u32); 
             println!("{:?}", response);
         }
+        else {
+            if f_name.ends_with(".json") {
+                println!("{} (skipped)", d_name);
+            }
+        }
     }
+    println!("total duration : {:?}", start.elapsed());
+    println!("Total records : {}", total_records);
+    //println!(""); //I don't know why it is needed. If we don't write something on this line, the "Total records" is not printed. 
     Ok(())
 }
+

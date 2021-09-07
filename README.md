@@ -12,6 +12,15 @@ There are different ways to install Excavator. The first method is particularly 
 If you don't have Rust installed on your computer, this method is for you.
 First click on "Releases" : 
 ![](/img/img-1-install.png)
+
+You should see the last release on your screen (v0.2.0 when we are writing this).
+Depending on your OS (Windows, Linux or Mac), click on one the three files highlighted (as I am currently on Windows, I click on `excavator-windows.tar.gz`).
+![](/img/img-2-install.png)
+
+It should download the file on your device. Then you need to uncompress it, using an unzip software : for this demonstration, we use 7zip. 
+![](/img/img-3-install.png)
+
+Finally, 
 ### Compiling from source
 You need to have a [package manager](https://doc.rust-lang.org/cargo/appendix/glossary.html#package-manager) called [cargo](https://doc.rust-lang.org/cargo/) in your local.
 

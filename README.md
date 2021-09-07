@@ -30,10 +30,9 @@ Put this file in `C:\Windows\System32`, and the installation is completed. You s
 
 #### Linux
 Click on the file you just downloaded.
-
 ![](/img/img-4-install.png)
 
-Then extract it when you want. In our case, we extract it in Desktop.
+Then extract it when you want. In our case, we extract it in `Desktop`.
 
 ![](/img/img-5-install.png)
 

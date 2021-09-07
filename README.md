@@ -14,13 +14,26 @@ First click on "Releases" :
 ![](/img/img-1-install.png)
 
 You should see the last release on your screen (v0.2.0 when we are writing this).
-Depending on your OS (Windows, Linux or Mac), click on one the three files highlighted (as I am currently on Windows, I click on `excavator-windows.tar.gz`).
+Depending on your OS (Windows, Linux or Mac), click on one the three files highlighted.
 ![](/img/img-2-install.png)
 
-It should download the file on your device. Then you need to uncompress it, using an unzip software : for this demonstration, we use 7zip. 
-![](/img/img-3-install.png)
+It should download the file on your device. Then you need to uncompress it.
 
-Finally, 
+#### Windows 
+We are using 7zip to unzip the file. 
+![](/img/img-3-install.png)
+Put this file in `C:\Windows\System32`, and the installation is completed. You should now be able to use Excavator in a terminal. 
+
+#### Linux
+Click on the file you just downloaded.
+![](/img/img-4-install.png)
+Then extract it when you want. In our case, we extract it in Desktop.
+![](/img/img-5-install.png)
+Finally, open a terminal and type the following command `sudo cp PATH_TO_EXCAVATOR /usr/bin` (replace PATH_TO_EXCAVATOR by the path to where you extracted excavator in the previous step). 
+![](/img/img-5-install.png)
+
+#### MacOS
+----------------------------
 ### Compiling from source
 You need to have a [package manager](https://doc.rust-lang.org/cargo/appendix/glossary.html#package-manager) called [cargo](https://doc.rust-lang.org/cargo/) in your local.
 

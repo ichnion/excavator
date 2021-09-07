@@ -10,11 +10,13 @@ There are different ways to install Excavator. The first method is particularly 
 
 ### Install the binary 
 If you don't have Rust installed on your computer, this method is for you.
-First click on "Releases" : 
+First click on "Releases" :
+
 ![](/img/img-1-install.png)
 
 You should see the last release on your screen (v0.2.0 when we are writing this).
 Depending on your OS (Windows, Linux or Mac), click on one the three files highlighted.
+
 ![](/img/img-2-install.png)
 
 It should download the file on your device. Then you need to uncompress it.

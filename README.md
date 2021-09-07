@@ -21,15 +21,22 @@ It should download the file on your device. Then you need to uncompress it.
 
 #### Windows 
 We are using 7zip to unzip the file. 
+
 ![](/img/img-3-install.png)
+
 Put this file in `C:\Windows\System32`, and the installation is completed. You should now be able to use Excavator in a terminal. 
 
 #### Linux
 Click on the file you just downloaded.
+
 ![](/img/img-4-install.png)
+
 Then extract it when you want. In our case, we extract it in Desktop.
+
 ![](/img/img-5-install.png)
+
 Finally, open a terminal and type the following command `sudo cp PATH_TO_EXCAVATOR /usr/bin` (replace PATH_TO_EXCAVATOR by the path to where you extracted excavator in the previous step). 
+
 ![](/img/img-5-install.png)
 
 #### MacOS

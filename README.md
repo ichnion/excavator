@@ -34,9 +34,11 @@ Then extract it wherever you want. In our case, we extract it in `Desktop`.
 
 ![](/docs/img-5-install.png)
 
-Finally, open a terminal and type the following command `sudo cp PATH_TO_EXCAVATOR /usr/local/bin` (replace PATH_TO_EXCAVATOR by the path to where you extracted excavator in the previous step). 
+Finally, open a terminal and type the following command `sudo cp PATH_TO_EXCAVATOR /usr/local/bin` (replace `PATH_TO_EXCAVATOR` by the path to where you extracted excavator in the previous step). 
 
 ![](/docs/img-6-install.png)
+
+The installation is completed, you should now be able to use Excavator in a terminal.
 
 #### MacOS
 Extract `excavator-linux.tar.gz` in usr/local/bin.

@@ -46,7 +46,9 @@ Extract `excavator-linux.tar.gz` in usr/local/bin.
 The installation is completed, you should now be able to use Excavator in a terminal.
 
 ----------------------------
-### Compiling from source
+### Developer users
+
+#### Compiling from source
 You need to have a [package manager](https://doc.rust-lang.org/cargo/appendix/glossary.html#package-manager) called [cargo](https://doc.rust-lang.org/cargo/) in your local.
 
 If you already have got `rustc` installed in your local, you also have `cargo` installed locally.
@@ -57,20 +59,20 @@ And then you can install with this command.
 $ cargo install --git https://github.com/ichnion/excavator --branch develop
 ```
 
-### Install from crates.io
+#### Install from crates.io
 You can also install from package registry.
 
 ```sh
 $ cargo install excavator
 ```
 
-### Install from Homebrew
+#### Install from Homebrew
 ```sh
 $ brew tap ichnion/tap
 $ brew install excavator
 ```
 
-### Update to the latest version
+#### Update to the latest version
 ```sh
 $ brew upgrade ichnion/tap/excavator
 ```

@@ -6,10 +6,9 @@
 Visualize your digital footprint.
 
 ## Installing Excavator
-There are different ways to install Excavator. The first method is particularly meant to be used by non-developers users.
+There are different ways to install Excavator. The first method is particularly meant to be used by non-developer users.
 
-### Install the binary 
-If you don't have Rust installed on your computer, this method is for you.
+### Non-developer users
 First click on "Releases" :
 
 ![](/docs/img-1-install.png)
@@ -30,9 +29,8 @@ Put this file in `C:\Windows\System32`, and the installation is completed. You s
 
 #### Linux
 Click on the file you just downloaded.
-![](/docs/img-4-install.png)
 
-Then extract it when you want. In our case, we extract it in `Desktop`.
+Then extract it wherever you want. In our case, we extract it in `Desktop`.
 
 ![](/docs/img-5-install.png)
 
@@ -41,6 +39,9 @@ Finally, open a terminal and type the following command `sudo cp PATH_TO_EXCAVAT
 ![](/docs/img-6-install.png)
 
 #### MacOS
+Extract `excavator-linux.tar.gz` in usr/local/bin.
+The installation is completed, you should now be able to use Excavator in a terminal.
+
 ----------------------------
 ### Compiling from source
 You need to have a [package manager](https://doc.rust-lang.org/cargo/appendix/glossary.html#package-manager) called [cargo](https://doc.rust-lang.org/cargo/) in your local.

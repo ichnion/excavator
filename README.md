@@ -27,6 +27,8 @@ We are using 7zip to unzip the file.
 
 Put this file in `C:\Windows\System32`, and the installation is completed. You should now be able to use Excavator in a terminal. 
 
+
+----------------------------
 #### Linux
 Click on the file you just downloaded.
 
@@ -40,6 +42,7 @@ Finally, open a terminal and type the following command `sudo cp PATH_TO_EXCAVAT
 
 The installation is completed, you should now be able to use Excavator in a terminal.
 
+----------------------------
 #### MacOS
 Extract `excavator-linux.tar.gz` in usr/local/bin.
 

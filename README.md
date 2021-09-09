@@ -40,6 +40,7 @@ Finally, open a terminal and type the following command `sudo cp PATH_TO_EXCAVAT
 
 #### MacOS
 Extract `excavator-linux.tar.gz` in usr/local/bin.
+
 The installation is completed, you should now be able to use Excavator in a terminal.
 
 ----------------------------

@@ -6,7 +6,52 @@
 Visualize your digital footprint.
 
 ## Installing Excavator
-### Compiling from source
+There are different ways to install Excavator. The first method is particularly meant to be used by non-developer users.
+
+### Non-developer users
+First click on "Releases" :
+
+![](/docs/img-1-install.png)
+
+You should see the last release on your screen (v0.2.0 when we are writing this).
+Depending on your OS (Windows, Linux or Mac), click on one the three files highlighted.
+
+![](/docs/img-2-install.png)
+
+It should download the file on your device. Then you need to uncompress it.
+
+#### Windows 
+We are using 7zip to unzip the file. 
+
+![](/docs/img-3-install.png)
+
+Put this file in `C:\Windows\System32`, and the installation is completed. You should now be able to use Excavator in a terminal. 
+
+
+----------------------------
+#### Linux
+Click on the file you just downloaded.
+
+Then extract it wherever you want. In our case, we extract it in `Desktop`.
+
+![](/docs/img-5-install.png)
+
+Finally, open a terminal and type the following command `sudo cp PATH_TO_EXCAVATOR /usr/local/bin` (replace `PATH_TO_EXCAVATOR` by the path to where you extracted excavator in the previous step). 
+
+![](/docs/img-6-install.png)
+
+The installation is completed, you should now be able to use Excavator in a terminal.
+
+----------------------------
+#### MacOS
+Extract `excavator-linux.tar.gz` in usr/local/bin.
+
+The installation is completed, you should now be able to use Excavator in a terminal.
+
+----------------------------
+### Developer users
+
+#### Compiling from source
 You need to have a [package manager](https://doc.rust-lang.org/cargo/appendix/glossary.html#package-manager) called [cargo](https://doc.rust-lang.org/cargo/) in your local.
 
 If you already have got `rustc` installed in your local, you also have `cargo` installed locally.
@@ -17,20 +62,20 @@ And then you can install with this command.
 $ cargo install --git https://github.com/ichnion/excavator --branch develop
 ```
 
-### Install from crates.io
+#### Install from crates.io
 You can also install from package registry.
 
 ```sh
 $ cargo install excavator
 ```
 
-### Install from Homebrew
+#### Install from Homebrew
 ```sh
 $ brew tap ichnion/tap
 $ brew install excavator
 ```
 
-### Update to the latest version
+#### Update to the latest version
 ```sh
 $ brew upgrade ichnion/tap/excavator
 ```

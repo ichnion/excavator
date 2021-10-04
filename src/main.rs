@@ -9,6 +9,7 @@ use excavator::activities::facebook::facebook_last_location;
 use excavator::activities::facebook::facebook_location_history;
 use excavator::activities::google::google_fit_activity;
 use excavator::activities::google::{location_history, saved_places, semantic_location_history};
+use excavator::activities::instagram::instagram_liked_posts;
 use excavator::activities::{
     facebook::{device_location, primary_public_location},
     MyActivity, PrimaryLocation,
@@ -167,6 +168,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let total_len = location_history_v2_len + location_history_len;
             total_records+= total_len;
             println!("{} records: ", total_len as u32); 
+            println!("{:?}", response);
+        // Instagram
+        } else if f_name.starts_with("liked_posts.json") {
+            println!("processing {}", d_name);
+
+            let rawdata = std::fs::read_to_string(&entry.path())?;
+
+            let result: instagram_liked_posts::LikedPosts = serde_json::from_str(&rawdata)?;
+            println!("({} records)", &result.likes_media_likes.len());
+            let response = result.saveToDb(&conn)?;
             println!("{:?}", response);
         }
         else {

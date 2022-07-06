@@ -215,4 +215,18 @@ pub fn create_tables(conn: &Connection) {
     )
     .map_err(|err| println!("{:?}", err))
     .ok();
+    
+    // snapchat_location_history
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS snapchat_areas_visited_history (
+            uuid              TEXT NOT NULL PRIMARY KEY,
+            Time              TEXT,
+            City              TEXT,
+            Region            TEXT,
+            Postal_Code       TEXT
+        )",
+        NO_PARAMS,
+    )
+    .map_err(|err| println!("{:?}", err))
+    .ok();
 }
